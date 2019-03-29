@@ -39,6 +39,62 @@ select
   null as columnvalue30 ,
   null as extendvalue 
 from (
+--法定审限内执结率
+select 
+'法定审限内执结率' as zbmc,
+fy.c_fy as fywd,
+fy.c_fymc,
+round(aj.fz/aj.fm*100,2) as zbsz
+from d_fy_qd fy
+LEFT JOIN(
+select 
+c_jbfyid,
+sum(COALESCE(n_fdsxnzjsz,0)) as fz,
+sum(COALESCE(n_fdsxnjasz,0)) as fm
+from t_jspt_qd_sy_fdsxnzjl_gdtjq 
+where c_tjq like extract(year from now())||'%'
+group by c_jbfyid
+) aj
+on fy.c_fy=substr(aj.c_jbfyid,4)
+
+union all
+--终本案件合格率
+select 
+'终本案件合格率' as zbmc,
+fy.c_fy as fywd,
+fy.c_fymc,
+round(aj.fz/aj.fm*100,2) as zbsz
+from d_fy_qd fy
+LEFT JOIN(
+select 
+c_jbfyid,
+sum(COALESCE(n_zbajsz,0)) as fm,
+sum(COALESCE(n_zbhgajz,0)) as fz
+from t_jspt_qd_sy_zbajhgl_gdtjq 
+where c_tjq like extract(year from now())||'%'
+group by c_jbfyid
+) aj
+on fy.c_fy=substr(aj.c_jbfyid,4)
+union all 
+--执行案件执结率
+select 
+'执行案件执结率' as zbmc,
+fy.c_fy as fywd,
+fy.c_fymc,
+round(aj.fz/aj.fm*100,2) as zbsz
+from d_fy_qd fy
+LEFT JOIN(
+select 
+c_jbfyid,
+sum(COALESCE(n_yjajs_zxz,0)) as fm,
+sum(COALESCE(n_zjlajz,0)) as fz
+from t_jspt_qd_sy_zxajzjl_gdtjq 
+where c_tjq like extract(year from now())||'%'
+group by c_jbfyid
+) aj
+on fy.c_fy=substr(aj.c_jbfyid,4)
+union all 
+--信访案件办结率
 
 
 
@@ -82,9 +138,115 @@ select
   null as columnvalue30 ,
   null as extendvalue 
 from (
+select 
+	fy.c_fy as fywd,
+	aj.ajlx as ajlx,
+	sum(aj.bntq) as ajs,
+	case 
+		when sum(aj.qntq)=0 then 0
+	else 
+		round(((sum(aj.bntq - aj.qntq))/sum(aj.qntq)),2)
+	end tb
+from d_fy_qd fy 
+left JOIN (
+select 
+	c_jbfyid,
+	'旧存' as ajlx,
+  sum(coalesce(n_jcajs_zxz,0)) as bntq,
+	0 as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now(),'yyyyMM')
+group by c_jbfyid
 
+union all 
+select 
+	c_jbfyid,
+	'新收' as ajlx,
+  sum(coalesce(n_xsajs_zxz,0)) as bntq,
+	0 as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now(),'yyyyMM')
+group by c_jbfyid
+union all 
+select 
+	c_jbfyid,
+	'已结' as ajlx,
+  sum(coalesce(n_yjajs_zxz,0)) as bntq,
+	0 as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now(),'yyyyMM')
+group by c_jbfyid
 
+union all 
+select 
+	c_jbfyid,
+	'未结' as ajlx,
+  sum(coalesce(n_wjajs_zxz,0)) as bntq,
+	0 as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now(),'yyyyMM')
+group by c_jbfyid
+union all 
+select 
+	c_jbfyid,
+	'总数' as ajlx,
+  sum(coalesce(n_jcajs_zxz,0)+coalesce(n_xsajs_zxz,0)) as bntq,
+	0 as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now(),'yyyyMM')
+group by c_jbfyid
+union all 
 
+select 
+	c_jbfyid,
+	'旧存' as ajlx,
+  0 as bntq,
+	sum(coalesce(n_jcajs_zxz,0)) as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now()-interval'1 year','yyyyMM')
+group by c_jbfyid
+
+union all 
+select 
+	c_jbfyid,
+	'新收' as ajlx,
+  0 as bntq,
+	sum(coalesce(n_xsajs_zxz,0)) as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now()-interval'1 year','yyyyMM')
+group by c_jbfyid
+union all 
+select 
+	c_jbfyid,
+	'已结' as ajlx,
+  0 as bntq,
+	sum(coalesce(n_yjajs_zxz,0)) as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now()-interval'1 year','yyyyMM')
+group by c_jbfyid
+
+union all 
+select 
+	c_jbfyid,
+	'未结' as ajlx,
+  0 as bntq,
+	sum(coalesce(n_wjajs_zxz,0)) as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now()-interval'1 year','yyyyMM')
+group by c_jbfyid
+union all 
+select 
+	c_jbfyid,
+	'总数' as ajlx,
+  0 as bntq,
+	sum(coalesce(n_jcajs_zxz,0)+coalesce(n_xsajs_zxz,0)) as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now()-interval'1 year','yyyyMM')
+group by c_jbfyid
+
+)aj
+on fy.c_fy=substr(aj.c_jbfyid,4)
+group by ajlx,fy.c_fy
 )syajs
 union all 
 -- 涉及特殊主体
