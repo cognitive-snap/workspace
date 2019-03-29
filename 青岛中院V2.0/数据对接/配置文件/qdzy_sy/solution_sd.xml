@@ -1,0 +1,42 @@
+<Solutions>
+<!--最后的指标视图到表-->
+    <V_Node_Solution>
+        <Solution>
+            <needSolution>00.needSolution.txt</needSolution>
+            <InitActions>
+            </InitActions>
+            <MainActions>
+                <KettleAction>
+                    <com_name>com.thunisoft.stat.implCom.ExportData</com_name>
+                    <func>execute</func>
+                    <DATASOURCE>sdgy_sy/sdgy_sy/DataSource_db_zjk.xml</DATASOURCE>
+                    <TABLES split="2">sdgy_sy/sdgy_sy/export_view/export_data.xml</TABLES>
+                    <OUTDIR>sdgy_sy/sdgy_sy/export_view/data</OUTDIR>
+                    <IS_FULL>1</IS_FULL>
+                    <exportType>ARTERYBASE</exportType>
+                </KettleAction>
+            </MainActions>
+            <CleanActions>
+            </CleanActions>
+        </Solution> 
+    </V_Node_Solution>  
+    <!--.dat文件数据落地到表-->
+    <V_Node_Solution>
+        <Solution>
+            <needSolution>00.needSolution.txt</needSolution>
+            <InitActions>
+            </InitActions>
+            <MainActions>
+                <KettleAction>
+                    <com_name>com.thunisoft.stat.implCom.ImportData</com_name>
+                    <func>execute</func>
+                    <DATASOURCE>sdgy_sy/sdgy_sy/DataSource_db_mb.xml</DATASOURCE>
+                    <TABLES split="2">sdgy_sy/sdgy_sy/export_view/import_data.xml</TABLES>
+                    <DATADIR>sdgy_sy/sdgy_sy/export_view/data</DATADIR>
+                </KettleAction>
+            </MainActions>
+            <CleanActions>
+            </CleanActions>
+        </Solution>
+    </V_Node_Solution>
+</Solutions>

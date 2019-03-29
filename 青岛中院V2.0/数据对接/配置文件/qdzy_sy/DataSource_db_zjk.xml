@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--定义到ODS DB_SFTJFXGLPT 数据库的连接 -->
+<!--driver 数据库驱动类型 -->
+<!--url 数据库地址 -->
+<!--username 用户名 -->
+<!--password 密码 -->
+<!--YX 是否有效，1为有效，0为无效 -->
+<database>
+    <connection>
+        <driver>com.thunisoft.ArteryBase.Driver</driver>
+        <url>jdbc:ArteryBase://172.23.20.217:5432/db_dp_zjk?charset=utf8
+        </url>
+        <username>dpzjk</username>
+        <password>123456</password>
+        <datasource>db_dpzjk</datasource>
+        <yx>1</yx>
+    </connection>
+</database>
