@@ -44,7 +44,10 @@ select
 '法定审限内执结率' as zbmc,
 fy.c_fy as fywd,
 fy.c_fymc,
-round(aj.fz/aj.fm*100,2) as zbsz
+case 
+	when aj.fm=0 then 0
+	else round(aj.fz/aj.fm*100,2) 
+	end as zbsz
 from d_fy_qd fy
 LEFT JOIN(
 select 
@@ -266,7 +269,7 @@ select
   null as columnvalue9,
   null as columnvalue10,
   ztlx as columnvalue11,--主体类型
-  ajs as columnvalue12,--案件数
+  ajsl as columnvalue12,--案件数
   null as columnvalue13,
   null as columnvalue14 ,
   null as columnvalue15 ,
@@ -287,7 +290,62 @@ select
   null as columnvalue30 ,
   null as extendvalue 
 from (
-
+--涉军
+select 
+fy.c_fy as fywd,
+aj.ztlx,
+aj.ajsl
+from 
+d_fy_qd fy 
+left join (
+SELECT 
+	c_jbfyid,
+	'军队' as ztlx,
+	sum(coalesce(n_ajsjz,0)) as ajsl
+from t_jspt_qd_sy_ajsj_gdtjq
+where 
+c_tjq like extract('year' from now())||'%' and
+ c_ajsj='涉军' or c_ajsj='涉警'
+group by c_jbfyid) aj
+on fy.c_fy=substr(aj.c_jbfyid,4)
+union all 
+--涉党政机构
+select 
+fy.c_fy as fywd,
+aj.ztlx,
+aj.ajsl
+from 
+d_fy_qd fy 
+left join (
+SELECT 
+	c_jbfyid,
+	'涉党政机构' as ztlx,
+	sum(coalesce(n_ajsjz,0)) as ajsl
+from t_jspt_qd_sy_ajsj_gdtjq
+where 
+c_tjq like extract('year' from now())||'%' and
+ c_ajsj='涉国家安全'
+group by c_jbfyid) aj
+on fy.c_fy=substr(aj.c_jbfyid,4)
+union all 
+--其他
+select 
+fy.c_fy as fywd,
+aj.ztlx,
+aj.ajsl
+from 
+d_fy_qd fy 
+left join (
+SELECT 
+	c_jbfyid,
+	'其他' as ztlx,
+	sum(coalesce(n_ajsjz,0)) as ajsl
+from t_jspt_qd_sy_ajsj_gdtjq
+where 
+c_tjq like extract('year' from now())||'%' and
+ c_ajsj!='涉国家安全' and c_ajsj!='涉军' and c_ajsj!='涉警'
+group by c_jbfyid) aj
+on fy.c_fy=substr(aj.c_jbfyid,4)
 
 
 )sjtszt
