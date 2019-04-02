@@ -438,12 +438,82 @@ from (
 
 )xzrc
 
+union all
 
-
-
-
-
-
+--首页新收已结统计
+select 
+  public.uuid_generate_v1() as id,
+  'sy_xsyjtj'as schemaid,
+  now() as gathertime,
+  now() as recordtime,
+  null as columnvalue1,
+  null as columnvalue2,
+  null as columnvalue3,
+  null as columnvalue4,
+  fywd as columnvalue5,--法院维度
+  null as columnvalue6,
+  null as columnvalue7 ,
+  null as columnvalue8,
+  null as columnvalue9,
+  null as columnvalue10,
+  lx as columnvalue11,--指标名称
+  cast(ajs as varchar) as  columnvalue12,--指标数值
+  null as columnvalue13,
+  null as columnvalue14 ,
+  null as columnvalue15 ,
+  null as columnvalue16 ,
+  null as columnvalue17 ,
+  null as columnvalue18 ,
+  null as columnvalue19 ,
+  null as columnvalue20 ,
+  null as columnvalue21 ,
+  null as columnvalue22 ,
+  null as columnvalue23 ,
+  null as columnvalue24 ,
+  null as columnvalue25 ,
+  null as columnvalue26 ,
+  null as columnvalue27 ,
+  null as columnvalue28 ,
+  null as columnvalue29 ,
+  null as columnvalue30 ,
+  null as extendvalue 
+from (
+with xs as (
+select qd.c_fy,COALESCE(xs,0) as xs
+from(
+select
+c_fy,
+sum(n_xsajs_zxz) as xs
+from 
+t_jspt_qd_sy_sjafx sja
+right join d_fy_qd qd on qd.c_fy=substr(sja.c_jbfyid,5)
+where to_char(dt_kssj_1,'yyyymmdd')=to_char(now()+'-1 day','yyyymmdd')
+group by c_fy
+) xs right join d_fy_qd qd on qd.c_fy=xs.c_fy
+),
+yj as (
+select qd.c_fy,COALESCE(yj,0) as yj 
+from(
+select 
+c_fy,
+sum(n_yjajs_zxz) as yj
+from 
+t_jspt_qd_sy_sjafx sja
+right join d_fy_qd qd on qd.c_fy=substr(sja.c_jbfyid,5)
+where to_char(dt_kssj_2,'yyyymmdd')=to_char(now()+'-1 day','yyyymmdd')
+group by c_fy
+) yj right join d_fy_qd qd on qd.c_fy=yj.c_fy
+)
+--新收
+select c_fy as fywd,'新收' as lx,xs as ajs from xs
+union all 
+select '185018620000' as fywd,'新收' as lx,sum(xs) as ajs from xs
+--已结
+union all 
+select c_fy as fywd,'已结' as lx,yj as ajs from yj
+union all 
+select '185018620000' as fywd,'已结' as lx,sum(yj) as ajs from yj
+) xsyj
 
 
 

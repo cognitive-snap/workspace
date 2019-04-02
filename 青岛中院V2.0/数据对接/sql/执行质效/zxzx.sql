@@ -18,7 +18,7 @@ select
   null as columnvalue9,
   null as columnvalue10,
   zxlx as columnvalue11,--质效类型
-  zxz as columnvalue12,--质效值
+  cast(zxz as varchar) as columnvalue12,--质效值
   null as columnvalue13,
   null as columnvalue14,
   null as columnvalue15,
@@ -101,7 +101,7 @@ select
   null as columnvalue9,
   null as columnvalue10,
   zxlx as columnvalue11,--质效类型
-  bfb as columnvalue12,--百分比
+  cast(bfb as varchar) as columnvalue12,--百分比
   null as columnvalue13,
   null as columnvalue14,
   null as columnvalue15,
@@ -224,7 +224,7 @@ select
   null as columnvalue10,
   zxlx as columnvalue11,--质效类型
   yf as columnvalue12,--月份
-  bz as columnvalue13,--比值
+  cast(bz as varchar) as columnvalue13,--比值
   null as columnvalue14,
   null as columnvalue15,
   null as columnvalue16,
