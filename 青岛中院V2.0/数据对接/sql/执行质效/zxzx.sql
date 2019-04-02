@@ -39,10 +39,51 @@ select
   null as columnvalue30 ,
   null as extendvalue 
 from(
+--执行完毕率
+select 
+c_fy as fywd,
+'执行完毕率'  as zxlx,
+case when fm=0 then 0 else round((fz/1.0/fm*100),1) end as zxz
+FROM(
+SELECT
+c_fy, 
+sum(n_sp_zxwbajsz) as fz,
+sum(n_yjajs_zxz) as fm 
+from t_jspt_qd_zxzx_zxwbl_gdtjq zxwb
+right join d_fy_qd qd on qd.c_fy=substr(zxwb.c_jbfyid,5)
+where c_tjq like extract(year from now())||'%'
+group by c_fy
+) zxwb
 
+
+union all 
+--法定期限内结案率
+select 
+c_fy as fywd,
+'法定期限内结案率' as zxlx,
+case when fm=0 then 0 else round(fz/1.0/fm*100,1) end as zxz
+from(
+select 
+c_fy,
+sum(n_fdqxjasz) as fz,
+sum(n_sczxajjasz) as fm
+from 
+t_jspt_qd_zxzx_fdqxnjal_gdtjq fdja
+right join d_fy_qd qd on qd.c_fy=substr(fdja.c_jbfyid,5)
+where c_tjq like extract(year from now())||'%'
+group by c_fy
+) fdjal
+
+union all 
+--有财产可供执行案件法定期限内实际执结率
+
+union all 
+--实际执结到位率
 
 )zxzx
+
 union all
+
 --质效指标
 select 
   public.uuid_generate_v1() as id,
@@ -81,11 +122,89 @@ select
   null as columnvalue30,
   null as extendvalue 
 from(
+with zxwbl as(
+SELECT
+c_fy, 
+sum(n_sp_zxwbajsz) as fz,
+sum(n_yjajs_zxz) as fm 
+from t_jspt_qd_zxzx_zxwbl_gdtjq zxwb 
+right join d_fy_qd qd on qd.c_fy=substr(zxwb.c_jbfyid,5)
+where c_tjq like extract(year from now())||'%'
+group by c_fy
+),
+hfwb as (
+select 
+c_fy,
+sum(n_zxzb_zxwbz) as fz,
+sum(n_zxzb_hfzxajz) as fm
+from 
+t_jspt_qd_zxzx_hfzxwbl_gdtjq hfzx
+right join d_fy_qd qd on qd.c_fy=substr(hfzx.c_jbfyid,5)
+where c_tjq like extract(year from now())||'%'
+group by c_fy
+),
+pjys as (
+select 
+c_jbfyid,
+n_zxzb_hfzxajz as ajs,
+COALESCE(date_part('day', (dt_jasj::TIMESTAMP-d_hclarq::TIMESTAMP)),0) as sj
+from 
+t_jspt_qd_zxzx_hfzxpjys
+where to_char(dt_kssj_1,'yyyy')=to_char(now(),'yyyy')
+)
 
+select 
+c_fy as fywd,
+'执行完毕率'  as zxlx,
+case when fm=0 then 0 else round((fz/1.0/fm*100),1) end as bfb
+from  zxwbl
 
-)zxzx
+union ALL
+
+select
+'185018620000' as fywd,
+'执行完毕率'  as zxlx,
+case when sum(fm)=0 then 0 else round((sum(fz)/1.0/sum(fm)*100),1) end as bfb 
+from zxwbl
+
 union all
 
+select 
+c_fy as fywd,
+'恢复执行完毕率' as zxlx,
+case when fm=0 then 0 else round(fz/1.0/fm*100,1) end as bfb
+from hfwb
+
+union all 
+
+select 
+'185018620000' as fywd,
+'恢复执行完毕率' as zxlx,
+case when sum(fm)=0 then 0 else round(sum(fz)/1.0/sum(fm)*100,1) end as bfb
+from hfwb
+
+union ALL
+
+select
+c_fy as fywd,
+'恢复执行平均用时' as zxlx,
+case when sum(ajs)=0 then 0 else round(sum(sj::int)/1.0/sum(ajs),1) end as bfb
+from pjys right join d_fy_qd qd on qd.c_fy=substr(pjys.c_jbfyid,5)
+group by c_fy
+
+union all 
+
+select 
+'185018620000' as fywd,
+'恢复执行平均用时' as zxlx,
+case when sum(ajs)=0 then 0 else round(sum(sj::int)/1.0/sum(ajs),1) end as bfb
+from pjys right join d_fy_qd qd on qd.c_fy=substr(pjys.c_jbfyid,5)
+
+union all 
+--实际执行到位率
+)zxzx
+
+union all 
 
 --指标变化趋势
 select 
@@ -125,9 +244,64 @@ select
   null as columnvalue30,
   null as extendvalue 
 from(
+select
+c_fy as fywd,
+'执行完毕率' as zxlx,
+yf,
+case when fm=0 then 0 else round(fz/1.0/fm*100,1) end as bz
+from(
+select
+c_fy,
+to_char(dt_kssj_1,'yyyymm') as yf,
+COALESCE(sum(n_sp_zxwbajsz),0) as fz,
+COALESCE(sum(n_yjajs_zxz),0) as fm
+from t_jspt_qd_zxzx_zxwbl wb
+right join d_fy_qd qd on qd.c_fy=substr(wb.c_jbfyid,5)
+where to_char(dt_kssj_1,'yyyymm') between to_char(now()+'-11 month','yyyymm') and to_char(now(),'yyyymm')
+group by c_fy,to_char(dt_kssj_1,'yyyymm')
+) zxwbl
 
+union all 
 
-)zxzx
-union all
+select 
+c_fy as fywd,
+'恢复执行完毕率' as zxlx,
+yf,
+case when fm=0 then 0 else round(fz/1.0/fm*100,1) end as bz
+from(
+select 
+c_fy,
+to_char(dt_kssj_1,'yyyymm') as yf,
+COALESCE(sum(n_zxzb_zxwbz),0) as fz,
+COALESCE(sum(n_zxzb_hfzxajz),0) as fm
+from t_jspt_qd_zxzx_hfzxwbl hfwb
+right join d_fy_qd qd on qd.c_fy=substr(hfwb.c_jbfyid,5)
+where to_char(dt_kssj_1,'yyyymm') between to_char(now()+'-11 month','yyyymm') and to_char(now(),'yyyymm')
+group by c_fy,to_char(dt_kssj_1,'yyyymm')
+) hfzxwbl
+
+union all 
+
+select 
+c_fy as fywd,
+'恢复执行平均用时' as zxlx,
+yf,
+case when fm=0 then 0 else round(fz::int/1.0/fm,1) end as bz
+from(
+select 
+c_fy,
+to_char(dt_kssj_1,'yyyymm') as yf,
+sum(COALESCE(date_part('day', (dt_jasj::TIMESTAMP-d_hclarq::TIMESTAMP)),0)) as fz,
+sum(n_zxzb_hfzxajz) as fm
+from t_jspt_qd_zxzx_hfzxpjys pj
+right join d_fy_qd qd on qd.c_fy=substr(pj.c_jbfyid,5)
+where to_char(dt_kssj_1,'yyyymm') between to_char(now()+'-11 month','yyyymm') and to_char(now(),'yyyymm')
+group by c_fy,to_char(dt_kssj_1,'yyyymm')
+) hfzxpjys
+
+union all 
+--实际执行到位率
+) zxzx
+
 
 
