@@ -337,8 +337,70 @@ select
   null as extendvalue 
 from (
 
+select 
+	fy.c_fy as fywd,
+	aj.nf,
+	aj.ajs
+from d_fy_qd fy
+left join (
+--µ±Äê
+select 
+	c_jbfyid ,
+	substr(c_tjq,1,4) as nf,
+	sum(coalesce(n_xsajs_zxz,0))as ajs
+from t_jspt_qd_sy_sjafx_gdtjq sja
+right join d_fy_qd fy on fy.c_fy = substr(sja.c_jbfyid,5)
+where c_tjq like extract('year' from now())||'%'
+group by c_jbfyid,c_tjq
+union all
+select 
+	c_jbfyid ,
+	substr(c_tjq,1,4) as nf,
+	sum(coalesce(n_xsajs_zxz,0))as ajs
+from t_jspt_qd_sy_sjafx_gdtjq sja
+right join d_fy_qd fy on fy.c_fy = substr(sja.c_jbfyid,5)
+where c_tjq like extract('year' from now()+interval'-1 year')||'%'
+group by c_jbfyid,c_tjq
 
+union all
+select 
+	c_jbfyid ,
+	substr(c_tjq,1,4) as nf,
+	sum(coalesce(n_xsajs_zxz,0))as ajs
+from t_jspt_qd_sy_sjafx_gdtjq sja
+right join d_fy_qd fy on fy.c_fy = substr(sja.c_jbfyid,5)
+where c_tjq like extract('year' from now()+interval'-2 year')||'%'
+group by c_jbfyid,c_tjq
+union all
+select 
+	c_jbfyid ,
+	substr(c_tjq,1,4) as nf,
+	sum(coalesce(n_xsajs_zxz,0))as ajs
+from t_jspt_qd_sy_sjafx_gdtjq sja
+right join d_fy_qd fy on fy.c_fy = substr(sja.c_jbfyid,5)
+where c_tjq like extract('year' from now()+interval'-3 year')||'%'
+group by c_jbfyid,c_tjq
 
+union all
+select 
+	c_jbfyid ,
+	substr(c_tjq,1,4) as nf,
+	sum(coalesce(n_xsajs_zxz,0))as ajs
+from t_jspt_qd_sy_sjafx_gdtjq sja
+right join d_fy_qd fy on fy.c_fy = substr(sja.c_jbfyid,5)
+where c_tjq like extract('year' from now()+interval'-4 year')||'%'
+group by c_jbfyid,c_tjq
 
+union all
+select 
+	c_jbfyid ,
+	substr(c_tjq,1,4) as nf,
+	sum(coalesce(n_xsajs_zxz,0))as ajs
+from t_jspt_qd_sy_sjafx_gdtjq sja
+right join d_fy_qd fy on fy.c_fy = substr(sja.c_jbfyid,5)
+where c_tjq like extract('year' from now()+interval'-5 year')||'%'
+group by c_jbfyid,c_tjq
+)aj
+on fy.c_fy = substr(aj.c_jbfyid,5)
 
 )jwn
