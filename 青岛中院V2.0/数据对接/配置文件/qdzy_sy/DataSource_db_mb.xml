@@ -9,11 +9,11 @@
 <database>
     <connection>
         <driver>com.thunisoft.ArteryBase.Driver</driver>
-        <url>jdbc:ArteryBase://172.23.20.217:5432/db_dp_sdgy?charset=utf8
+        <url>jdbc:ArteryBase://142.35.158.138:6543/db_dp_qdzy?charset=utf8
         </url>
-        <username>sdgy</username>
+        <username>qdzy</username>
         <password>123456</password>
-        <datasource>db_sdgy</datasource>
+        <datasource>db_qdzy</datasource>
         <yx>1</yx>
     </connection>
 </database>

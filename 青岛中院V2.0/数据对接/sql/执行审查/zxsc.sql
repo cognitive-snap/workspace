@@ -103,6 +103,62 @@ WHERE
 	)
 GROUP BY
 	c_jbfyid
+	
+--全市	
+union all
+SELECT
+	'0000185018620000'as c_jbfyid,
+	'审查类' AS ajlx,
+	SUM (n_scl_yjajz) AS yjs,
+	SUM (n_scl_wjajz) AS wjs
+FROM
+	db_dpzjk.t_jspt_qd_zxsc_zxajfl_gdtjq
+WHERE
+	c_tjq LIKE (
+		EXTRACT (YEAR FROM now()) || '%'
+	)
+
+union all 
+SELECT
+	'0000185018620000'as c_jbfyid,
+	'异议类' AS ajlx,
+	SUM (n_yyl_yjajz) AS yjs,
+	SUM (n_yyl_wjajz) AS wjs
+FROM
+	db_dpzjk.t_jspt_qd_zxsc_zxajfl_gdtjq
+WHERE
+	c_tjq LIKE (
+		EXTRACT (YEAR FROM now()) || '%'
+	)
+
+
+union all 
+
+SELECT
+	'0000185018620000'as c_jbfyid,
+	'复议类' AS ajlx,
+	SUM (n_fyl_yjajz) AS yjs,
+	SUM (n_fyl_wjajz) AS wjs
+FROM
+	db_dpzjk.t_jspt_qd_zxsc_zxajfl_gdtjq
+WHERE
+	c_tjq LIKE (
+		EXTRACT (YEAR FROM now()) || '%'
+	)
+
+union all 
+SELECT
+	'0000185018620000'as c_jbfyid,
+	'监督类' AS ajlx,
+	SUM (n_jdl_yjajz) AS yjs,
+	SUM (n_jdl_wjajz) AS wjs
+FROM
+	db_dpzjk.t_jspt_qd_zxsc_zxajfl_gdtjq
+WHERE
+	c_tjq LIKE (
+		EXTRACT (YEAR FROM now()) || '%'
+	)
+
 )aj
 on fy.c_fy = substr(aj.c_jbfyid,5)
 )zxajfl
@@ -187,7 +243,7 @@ where c_tjq like extract('year' from now())||'%'
 group by c_jbfyid
 ) aj 
 on fy.c_fy = substr(aj.c_jbfyid,5)
-
+where c_fy!='185018620000'
 
 
 )sclaj
@@ -293,6 +349,15 @@ from t_jspt_qd_sy_sjafx_mouth sja
 right join d_fy_qd fy on fy.c_fy = substr(sja.c_jbfyid,5)
 where c_tjq like extract('year' from now())||'%'
 group by c_jbfyid,c_tjq
+union all 
+--全市
+select 
+	'0000185018620000' as fywd,
+	c_tjq,
+	sum(coalesce(n_xsajs_zxz,0))as ajs
+from t_jspt_qd_sy_sjafx_mouth sja
+where c_tjq like extract('year' from now())||'%'
+group by c_tjq
 )aj
 on yf.c_yf = substr(aj.c_tjq,5,2) 
 )bn
@@ -349,7 +414,6 @@ select
 	substr(c_tjq,1,4) as nf,
 	sum(coalesce(n_xsajs_zxz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
-right join d_fy_qd fy on fy.c_fy = substr(sja.c_jbfyid,5)
 where c_tjq like extract('year' from now())||'%'
 group by c_jbfyid,c_tjq
 union all
@@ -358,7 +422,6 @@ select
 	substr(c_tjq,1,4) as nf,
 	sum(coalesce(n_xsajs_zxz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
-right join d_fy_qd fy on fy.c_fy = substr(sja.c_jbfyid,5)
 where c_tjq like extract('year' from now()+interval'-1 year')||'%'
 group by c_jbfyid,c_tjq
 
@@ -368,7 +431,6 @@ select
 	substr(c_tjq,1,4) as nf,
 	sum(coalesce(n_xsajs_zxz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
-right join d_fy_qd fy on fy.c_fy = substr(sja.c_jbfyid,5)
 where c_tjq like extract('year' from now()+interval'-2 year')||'%'
 group by c_jbfyid,c_tjq
 union all
@@ -377,7 +439,6 @@ select
 	substr(c_tjq,1,4) as nf,
 	sum(coalesce(n_xsajs_zxz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
-right join d_fy_qd fy on fy.c_fy = substr(sja.c_jbfyid,5)
 where c_tjq like extract('year' from now()+interval'-3 year')||'%'
 group by c_jbfyid,c_tjq
 
@@ -387,7 +448,6 @@ select
 	substr(c_tjq,1,4) as nf,
 	sum(coalesce(n_xsajs_zxz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
-right join d_fy_qd fy on fy.c_fy = substr(sja.c_jbfyid,5)
 where c_tjq like extract('year' from now()+interval'-4 year')||'%'
 group by c_jbfyid,c_tjq
 
@@ -397,9 +457,64 @@ select
 	substr(c_tjq,1,4) as nf,
 	sum(coalesce(n_xsajs_zxz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
-right join d_fy_qd fy on fy.c_fy = substr(sja.c_jbfyid,5)
 where c_tjq like extract('year' from now()+interval'-5 year')||'%'
 group by c_jbfyid,c_tjq
+
+union all 
+--全市
+
+--当年
+select 
+	'0000185018620000' as c_jbfyid,
+	substr(c_tjq,1,4) as nf,
+	sum(coalesce(n_xsajs_zxz,0))as ajs
+from t_jspt_qd_sy_sjafx_gdtjq sja
+where c_tjq like extract('year' from now())||'%'
+group by c_tjq
+union all
+select 
+	'0000185018620000' as c_jbfyid, ,
+	substr(c_tjq,1,4) as nf,
+	sum(coalesce(n_xsajs_zxz,0))as ajs
+from t_jspt_qd_sy_sjafx_gdtjq sja
+right join d_fy_qd fy on fy.c_fy = substr(sja.c_jbfyid,5)
+where c_tjq like extract('year' from now()+interval'-1 year')||'%'
+group by c_jbfyid,c_tjq
+
+union all
+select 
+	'0000185018620000' as c_jbfyid, ,
+	substr(c_tjq,1,4) as nf,
+	sum(coalesce(n_xsajs_zxz,0))as ajs
+from t_jspt_qd_sy_sjafx_gdtjq sja
+where c_tjq like extract('year' from now()+interval'-2 year')||'%'
+group by c_tjq
+union all
+select 
+	'0000185018620000' as c_jbfyid, ,
+	substr(c_tjq,1,4) as nf,
+	sum(coalesce(n_xsajs_zxz,0))as ajs
+from t_jspt_qd_sy_sjafx_gdtjq sja
+where c_tjq like extract('year' from now()+interval'-3 year')||'%'
+group by c_tjq
+
+union all
+select 
+	'0000185018620000' as c_jbfyid, ,
+	substr(c_tjq,1,4) as nf,
+	sum(coalesce(n_xsajs_zxz,0))as ajs
+from t_jspt_qd_sy_sjafx_gdtjq sja
+where c_tjq like extract('year' from now()+interval'-4 year')||'%'
+group by c_tjq
+
+union all
+select 
+	'0000185018620000' as c_jbfyid, ,
+	substr(c_tjq,1,4) as nf,
+	sum(coalesce(n_xsajs_zxz,0))as ajs
+from t_jspt_qd_sy_sjafx_gdtjq sja
+where c_tjq like extract('year' from now()+interval'-5 year')||'%'
+group by c_tjq
 )aj
 on fy.c_fy = substr(aj.c_jbfyid,5)
 

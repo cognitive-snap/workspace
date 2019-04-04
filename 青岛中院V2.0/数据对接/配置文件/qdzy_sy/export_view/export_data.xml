@@ -4,6 +4,6 @@
         <source_table>db_dpzjk.v_visu_sy</source_table>
         <truncate>1</truncate>
         <compute>1</compute>
-        <target_table>db_sdgy.z_visu_sy</target_table>
+        <target_table>db_qdzy.z_visu_sy</target_table>
     </table>
 </connect>

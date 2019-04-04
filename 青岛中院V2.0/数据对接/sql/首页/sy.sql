@@ -18,7 +18,7 @@ select
   null as columnvalue9,
   null as columnvalue10,
   zbmc as columnvalue11,--指标名称
-  zbsz as columnvalue12,--指标数值
+  coalesce(zbsz,0) as columnvalue12,--指标数值
   null as columnvalue13,
   null as columnvalue14 ,
   null as columnvalue15 ,
@@ -46,7 +46,7 @@ fy.c_fy as fywd,
 fy.c_fymc,
 case 
 	when aj.fm=0 then 0
-	else round(aj.fz/aj.fm*100,2) 
+	else round(aj.fz::numeric/aj.fm::numeric*100,2) 
 	end as zbsz
 from d_fy_qd fy
 LEFT JOIN(
@@ -58,15 +58,15 @@ from t_jspt_qd_sy_fdsxnzjl_gdtjq
 where c_tjq like extract(year from now())||'%'
 group by c_jbfyid
 ) aj
-on fy.c_fy=substr(aj.c_jbfyid,4)
-
+on fy.c_fy=substr(aj.c_jbfyid,5)
+where fy.c_fy!='185018620000'
 union all
 --终本案件合格率
 select 
 '终本案件合格率' as zbmc,
 fy.c_fy as fywd,
 fy.c_fymc,
-round(aj.fz/aj.fm*100,2) as zbsz
+round(aj.fz::numeric/aj.fm::numeric*100,2) as zbsz
 from d_fy_qd fy
 LEFT JOIN(
 select 
@@ -77,14 +77,15 @@ from t_jspt_qd_sy_zbajhgl_gdtjq
 where c_tjq like extract(year from now())||'%'
 group by c_jbfyid
 ) aj
-on fy.c_fy=substr(aj.c_jbfyid,4)
+on fy.c_fy=substr(aj.c_jbfyid,5)
+where fy.c_fy!='185018620000'
 union all 
 --执行案件执结率
 select 
 '执行案件执结率' as zbmc,
 fy.c_fy as fywd,
 fy.c_fymc,
-round(aj.fz/aj.fm*100,2) as zbsz
+round(aj.fz::numeric/aj.fm::numeric*100,2) as zbsz
 from d_fy_qd fy
 LEFT JOIN(
 select 
@@ -95,7 +96,8 @@ from t_jspt_qd_sy_zxajzjl_gdtjq
 where c_tjq like extract(year from now())||'%'
 group by c_jbfyid
 ) aj
-on fy.c_fy=substr(aj.c_jbfyid,4)
+on fy.c_fy=substr(aj.c_jbfyid,5)
+where fy.c_fy!='185018620000'
 union all 
 --信访案件办结率
 
@@ -148,7 +150,7 @@ select
 	case 
 		when sum(aj.qntq)=0 then 0
 	else 
-		round(((sum(aj.bntq - aj.qntq))/sum(aj.qntq)),2)
+		round(((sum(aj.bntq - aj.qntq))::numeric/sum(aj.qntq)::numeric),2)
 	end tb
 from d_fy_qd fy 
 left JOIN (
@@ -246,9 +248,95 @@ select
 from t_jspt_qd_sy_sjafx_mouth aj
 where c_tjq = to_char(now()-interval'1 year','yyyyMM')
 group by c_jbfyid
+union all 
+select 
+	'0000185018620000'as c_jbfyid,
+	'旧存' as ajlx,
+  sum(coalesce(n_jcajs_zxz,0)) as bntq,
+	0 as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now(),'yyyyMM')
 
+
+union all 
+select 
+	'0000185018620000'as c_jbfyid,
+	'新收' as ajlx,
+  sum(coalesce(n_xsajs_zxz,0)) as bntq,
+	0 as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now(),'yyyyMM')
+union all 
+select 
+	'0000185018620000'as c_jbfyid,
+	'已结' as ajlx,
+  sum(coalesce(n_yjajs_zxz,0)) as bntq,
+	0 as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now(),'yyyyMM')
+
+union all 
+select 
+	'0000185018620000'as c_jbfyid,
+	'未结' as ajlx,
+  sum(coalesce(n_wjajs_zxz,0)) as bntq,
+	0 as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now(),'yyyyMM')
+
+union all 
+select 
+	'185018620000'as c_jbfyid,
+	'总数' as ajlx,
+  sum(coalesce(n_jcajs_zxz,0)+coalesce(n_xsajs_zxz,0)) as bntq,
+	0 as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now(),'yyyyMM')
+union all 
+
+select 
+	'0000185018620000'as c_jbfyid,
+	'旧存' as ajlx,
+  0 as bntq,
+	sum(coalesce(n_jcajs_zxz,0)) as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now()-interval'1 year','yyyyMM')
+
+union all 
+select 
+	'0000185018620000'as c_jbfyid,
+	'新收' as ajlx,
+  0 as bntq,
+	sum(coalesce(n_xsajs_zxz,0)) as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now()-interval'1 year','yyyyMM')
+union all 
+select 
+	'0000185018620000'as c_jbfyid,
+	'已结' as ajlx,
+  0 as bntq,
+	sum(coalesce(n_yjajs_zxz,0)) as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now()-interval'1 year','yyyyMM')
+
+union all 
+select 
+	'0000185018620000'as c_jbfyid,
+	'未结' as ajlx,
+  0 as bntq,
+	sum(coalesce(n_wjajs_zxz,0)) as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now()-interval'1 year','yyyyMM')
+union all 
+select 
+	'0000185018620000'as c_jbfyid,
+	'总数' as ajlx,
+  0 as bntq,
+	sum(coalesce(n_jcajs_zxz,0)+coalesce(n_xsajs_zxz,0)) as qntq
+from t_jspt_qd_sy_sjafx_mouth aj
+where c_tjq = to_char(now()-interval'1 year','yyyyMM')
 )aj
-on fy.c_fy=substr(aj.c_jbfyid,4)
+on fy.c_fy=substr(aj.c_jbfyid,5)
 group by ajlx,fy.c_fy
 )syajs
 union all 
@@ -306,17 +394,8 @@ from t_jspt_qd_sy_ajsj_gdtjq
 where 
 c_tjq like extract('year' from now())||'%' and
  c_ajsj='涉军' or c_ajsj='涉警'
-group by c_jbfyid) aj
-on fy.c_fy=substr(aj.c_jbfyid,4)
+group by c_jbfyid
 union all 
---涉党政机构
-select 
-fy.c_fy as fywd,
-aj.ztlx,
-aj.ajsl
-from 
-d_fy_qd fy 
-left join (
 SELECT 
 	c_jbfyid,
 	'涉党政机构' as ztlx,
@@ -325,17 +404,8 @@ from t_jspt_qd_sy_ajsj_gdtjq
 where 
 c_tjq like extract('year' from now())||'%' and
  c_ajsj='涉国家安全'
-group by c_jbfyid) aj
-on fy.c_fy=substr(aj.c_jbfyid,4)
+group by c_jbfyid
 union all 
---其他
-select 
-fy.c_fy as fywd,
-aj.ztlx,
-aj.ajsl
-from 
-d_fy_qd fy 
-left join (
 SELECT 
 	c_jbfyid,
 	'其他' as ztlx,
@@ -344,10 +414,37 @@ from t_jspt_qd_sy_ajsj_gdtjq
 where 
 c_tjq like extract('year' from now())||'%' and
  c_ajsj!='涉国家安全' and c_ajsj!='涉军' and c_ajsj!='涉警'
-group by c_jbfyid) aj
-on fy.c_fy=substr(aj.c_jbfyid,4)
+group by c_jbfyid
+union all 
+SELECT 
+	'0000185018620000'as c_jbfyid,
+	'军队' as ztlx,
+	sum(coalesce(n_ajsjz,0)) as ajsl
+from t_jspt_qd_sy_ajsj_gdtjq
+where 
+c_tjq like extract('year' from now())||'%' and
+ c_ajsj='涉军' or c_ajsj='涉警'
+union all 
+SELECT 
+	'0000185018620000'as c_jbfyid,
+	'涉党政机构' as ztlx,
+	sum(coalesce(n_ajsjz,0)) as ajsl
+from t_jspt_qd_sy_ajsj_gdtjq
+where 
+c_tjq like extract('year' from now())||'%' and
+ c_ajsj='涉国家安全'
+union all 
+SELECT 
+	'0000185018620000'as c_jbfyid,
+	'其他' as ztlx,
+	sum(coalesce(n_ajsjz,0)) as ajsl
+from t_jspt_qd_sy_ajsj_gdtjq
+where 
+c_tjq like extract('year' from now())||'%' and
+ c_ajsj!='涉国家安全' and c_ajsj!='涉军' and c_ajsj!='涉警'
 
-
+) aj
+on fy.c_fy=substr(aj.c_jbfyid,5)
 )sjtszt
 union all 
 --信用惩戒
