@@ -74,13 +74,14 @@ where c_tjq like extract(year from now())||'%'
 group by c_fy
 ) fdjal
 
-union all 
---有财产可供执行案件法定期限内实际执结率
-
-union all 
---实际执结到位率
-
 )zxzx
+
+union all
+--有财产可供执行案件法定期限内实际执结率
+--实际执结到位率
+select * from "db_dpzjk"."d_testData_qd"
+where schemaid='zxzx_zxzx' 
+
 
 union all
 
@@ -151,6 +152,16 @@ COALESCE(date_part('day', (dt_jasj::TIMESTAMP-d_hclarq::TIMESTAMP)),0) as sj
 from 
 t_jspt_qd_zxzx_hfzxpjys
 where to_char(dt_kssj_1,'yyyy')=to_char(now(),'yyyy')
+),
+dwl as (
+select 
+c_fy,
+sum(n_sjdwje) as fz,
+sum(n_sqzxbdje) as fm
+from t_jspt_qd_zxzx_sjzxdwl dwl
+right join d_fy_qd qd on qd.c_fy=substr(dwl.c_jbfyid,5)
+where to_char(dt_kssj_1,'yyyy')=to_char(now(),'yyyy')
+group by c_fy
 )
 
 select 
@@ -202,6 +213,20 @@ from pjys right join d_fy_qd qd on qd.c_fy=substr(pjys.c_jbfyid,5)
 
 union all 
 --实际执行到位率
+select 
+c_fy as fywd,
+'实际执行到位率'  as zxlx,
+case when fm=0 then 0 else round((fz/1.0/fm*100),1) end as bfb
+from  dwl
+
+union ALL
+
+select
+'185018620000' as fywd,
+'实际执行到位率'  as zxlx,
+case when sum(fm)=0 then 0 else round((sum(fz)/1.0/sum(fm)*100),1) end as bfb 
+from dwl 
+
 )zxzx
 
 union all 
@@ -301,6 +326,22 @@ group by c_fy,to_char(dt_kssj_1,'yyyymm')
 
 union all 
 --实际执行到位率
+select
+c_fy as fywd,
+'实际执行到位率' as zxlx,
+yf,
+case when fm=0 then 0 else round(fz/1.0/fm*100,1) end as bz
+from(
+select 
+c_fy,
+to_char(dt_kssj_1,'yyyymm') as yf,
+COALESCE(sum(n_sjdwje),0) as fz,
+COALESCE(sum(n_sqzxbdje),0) as fm
+from t_jspt_qd_zxzx_sjzxdwl dwl
+right join d_fy_qd qd on qd.c_fy=substr(dwl.c_jbfyid,5)
+where to_char(dt_kssj_1,'yyyymm') between to_char(now()+'-11 month','yyyymm') and to_char(now(),'yyyymm')
+group by c_fy,to_char(dt_kssj_1,'yyyymm')
+) sjzxdwl
 ) zxzx
 
 
