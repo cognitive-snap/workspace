@@ -94,9 +94,17 @@ where c_tjq like extract('year'from now())||'%'
 on fy.c_fy = substr(llyj.c_jbfyid,5)
 )llyj
 union all
-
+--ÅÄÂô²âÊÔÊı¾İ
+select * from "db_dpzjk"."d_testData_qd"
+where schemaid='zxss_ccpm_pmjd' 
+union all 
+select * from "db_dpzjk"."d_testData_qd"
+where schemaid='zxss_wpsj_ajje' 
+union all 
+select * from "db_dpzjk"."d_testData_qd"
+where schemaid='zxss_wpsj_pmxx' 
 -- ÍøÂçÅÄÂô-ÅÄÂô½×¶Î
-select 	
+/*select 	
   public.uuid_generate_v1() as id,
   'zxss_ccpm_pmjd'as schemaid,
   now() as gathertime,
@@ -228,7 +236,7 @@ from
 
 
 )pmxx
-
+*/
 
 
 union all

@@ -98,12 +98,12 @@ group by c_jbfyid
 ) aj
 on fy.c_fy=substr(aj.c_jbfyid,5)
 where fy.c_fy!='185018620000'
-union all 
---信访案件办结率
-
-
-
 )zxzbph
+union all 
+----信访案件办结率(测试数据)
+select * from "db_dpzjk"."d_testData_qd"
+where schemaid='sy_zxzbph' and columnvalue11='信访案件办结率'
+
 union all 
 --首页案件数
 select 
