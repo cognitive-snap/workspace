@@ -46,6 +46,7 @@ select
 	llyj.yjsl
 from d_fy_qd fy
 left join (
+--统计期是减少3天
 select 
 	c_jbfyid,
 	'网拍'as yjlx,
@@ -90,6 +91,52 @@ select
 	sum(coalesce(n_jayjz,0)) as yjsl
 from t_jspt_qd_zxss_llyj_gdtjq 
 where c_tjq like extract('year'from now())||'%'
+union all 
+select 
+	c_jbfyid,
+	'执行通知' as yjlx,
+	sum(coalesce(n_jdaj_sdz,0))as yjsl
+from t_jspt_zxss_jdaj
+where c_tjq like extract('year'from now())||'%'
+group by c_jbfyid
+union all 
+select 
+	'0000185018620000' as c_jbfyid,
+	'执行通知' as yjlx,
+	sum(coalesce(n_jdaj_sdz,0))as yjsl
+from t_jspt_zxss_jdaj
+where c_tjq like extract('year'from now())||'%' and  c_hddc='执行通知'
+
+union all 
+select 
+	c_jbfyid,
+	'总对总查询' as yjlx,
+	sum(coalesce(n_jdaj_sdz,0))as yjsl
+from t_jspt_zxss_jdaj
+where c_tjq like extract('year'from now())||'%'and  c_hddc='点对点查控'
+group by c_jbfyid
+union all 
+select 
+	'0000185018620000' as c_jbfyid,
+	'总对总查询' as yjlx,
+	sum(coalesce(n_jdaj_sdz,0))as yjsl
+from t_jspt_zxss_jdaj
+where c_tjq like extract('year'from now())||'%'and  c_hddc='点对点查控'
+union all 
+select 
+	c_jbfyid,
+	'终本约谈' as yjlx,
+	sum(coalesce(n_jdaj_sdz,0))as yjsl
+from t_jspt_zxss_jdaj
+where c_tjq like extract('year'from now())||'%'and  c_hddc='终本约谈'
+group by c_jbfyid
+union all 
+select 
+	'0000185018620000' as c_jbfyid,
+	'终本约谈' as yjlx,
+	sum(coalesce(n_jdaj_sdz,0))as yjsl
+from t_jspt_zxss_jdaj
+where c_tjq like extract('year'from now())||'%'and  c_hddc='终本约谈'
 )llyj
 on fy.c_fy = substr(llyj.c_jbfyid,5)
 )llyj
