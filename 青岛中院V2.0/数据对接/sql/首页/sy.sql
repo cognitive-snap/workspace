@@ -2,6 +2,8 @@ drop view if exists db_dpzjk.v_visu_sy;
 create view db_dpzjk.v_visu_sy as
 
 --质效指标排行
+
+--质效指标排行
 select 
   public.uuid_generate_v1() as id,
   'sy_zxzbph'as schemaid,
@@ -18,7 +20,7 @@ select
   null as columnvalue9,
   null as columnvalue10,
   zbmc as columnvalue11,--指标名称
-  coalesce(zbsz,0) as columnvalue12,--指标数值
+  cast(coalesce(zbsz,0)as text) as columnvalue12,--指标数值
   null as columnvalue13,
   null as columnvalue14 ,
   null as columnvalue15 ,
@@ -101,9 +103,44 @@ where fy.c_fy!='185018620000'
 )zxzbph
 union all 
 ----信访案件办结率(测试数据)
-select * from "db_dpzjk"."d_testData_qd"
+select 
+	public.uuid_generate_v1() as id,
+  schemaid,
+  now() as gathertime,
+  now() as recordtime,
+  columnvalue1,
+  columnvalue2,
+  columnvalue3,
+  columnvalue4,
+  columnvalue5,
+  columnvalue6,
+  columnvalue7,
+  columnvalue8,
+  columnvalue9,
+  columnvalue10,
+  columnvalue11,
+  columnvalue12,
+  columnvalue13,
+  columnvalue14 ,
+  columnvalue15 ,
+  columnvalue16 ,
+  columnvalue17 ,
+  columnvalue18 ,
+  columnvalue19 ,
+  columnvalue20 ,
+  columnvalue21 ,
+  columnvalue22 ,
+  columnvalue23 ,
+  columnvalue24 ,
+  columnvalue25 ,
+  columnvalue26 ,
+  columnvalue27 ,
+  columnvalue28 ,
+  columnvalue29 ,
+  columnvalue30 ,
+  extendvalue  
+from "db_dpzjk"."d_testData_qd"
 where schemaid='sy_zxzbph' and columnvalue11='信访案件办结率'
-
 union all 
 --首页案件数
 select 
@@ -121,9 +158,9 @@ select
   null as columnvalue8,
   null as columnvalue9,
   null as columnvalue10,
-  ajlx as columnvalue11,--案件类型
-  ajs as columnvalue12,--案件数
-  tb as columnvalue13,--同比
+  cast(ajlx as text) as columnvalue11,--案件类型
+  cast(ajs as text)as columnvalue12,--案件数
+  cast(tb as text) as columnvalue13,--同比
   null as columnvalue14 ,
   null as columnvalue15 ,
   null as columnvalue16 ,
@@ -339,6 +376,7 @@ where c_tjq = to_char(now()-interval'1 year','yyyyMM')
 on fy.c_fy=substr(aj.c_jbfyid,5)
 group by ajlx,fy.c_fy
 )syajs
+
 union all 
 -- 涉及特殊主体
 select 
@@ -357,7 +395,7 @@ select
   null as columnvalue9,
   null as columnvalue10,
   ztlx as columnvalue11,--主体类型
-  ajsl as columnvalue12,--案件数
+  ajsl::text as columnvalue12,--案件数
   null as columnvalue13,
   null as columnvalue14 ,
   null as columnvalue15 ,
@@ -447,8 +485,87 @@ c_tjq like extract('year' from now())||'%' and
 on fy.c_fy=substr(aj.c_jbfyid,5)
 )sjtszt
 union all 
---信用惩戒
+select 	public.uuid_generate_v1() as id,
+  schemaid,
+  now() as gathertime,
+  now() as recordtime,
+  columnvalue1,
+  columnvalue2,
+  columnvalue3,
+  columnvalue4,
+  columnvalue5,
+  columnvalue6,
+  columnvalue7,
+  columnvalue8,
+  columnvalue9,
+  columnvalue10,
+  columnvalue11,
+  columnvalue12,
+  columnvalue13,
+  columnvalue14 ,
+  columnvalue15 ,
+  columnvalue16 ,
+  columnvalue17 ,
+  columnvalue18 ,
+  columnvalue19 ,
+  columnvalue20 ,
+  columnvalue21 ,
+  columnvalue22 ,
+  columnvalue23 ,
+  columnvalue24 ,
+  columnvalue25 ,
+  columnvalue26 ,
+  columnvalue27 ,
+  columnvalue28 ,
+  columnvalue29 ,
+  columnvalue30 ,
+  extendvalue  
+  from 
+"db_dpzjk"."d_testData_qd"
+where schemaid ='sy_xycj'
+union all 
+select 	
+  public.uuid_generate_v1() as id,
+  schemaid,
+  now() as gathertime,
+  now() as recordtime,
+  columnvalue1,
+  columnvalue2,
+  columnvalue3,
+  columnvalue4,
+  columnvalue5,
+  columnvalue6,
+  columnvalue7,
+  columnvalue8,
+  columnvalue9,
+  columnvalue10,
+  columnvalue11,
+  columnvalue12,
+  columnvalue13,
+  columnvalue14 ,
+  columnvalue15 ,
+  columnvalue16 ,
+  columnvalue17 ,
+  columnvalue18 ,
+  columnvalue19 ,
+  columnvalue20 ,
+  columnvalue21 ,
+  columnvalue22 ,
+  columnvalue23 ,
+  columnvalue24 ,
+  columnvalue25 ,
+  columnvalue26 ,
+  columnvalue27 ,
+  columnvalue28 ,
+  columnvalue29 ,
+  columnvalue30 ,
+  extendvalue  
+  from 
+"db_dpzjk"."d_testData_qd"
+where schemaid ='sy_xzrc'
 
+--信用惩戒
+/*
 select 
   public.uuid_generate_v1() as id,
   'sy_xycj' as schemaid,
@@ -534,7 +651,7 @@ from (
 
 
 )xzrc
-
+*/
 union all
 
 --首页新收已结统计
@@ -554,7 +671,7 @@ select
   null as columnvalue9,
   null as columnvalue10,
   lx as columnvalue11,--指标名称
-  cast(ajs as varchar) as  columnvalue12,--指标数值
+  cast(ajs as text) as  columnvalue12,--指标数值
   null as columnvalue13,
   null as columnvalue14 ,
   null as columnvalue15 ,

@@ -1,5 +1,5 @@
 drop view if exists db_dpzjk.v_visu_zxss;
-create view db_dpzjk,v_visu_zxss as 
+create view db_dpzjk.v_visu_zxss as 
 
 -- 流量预警
 select 
@@ -18,7 +18,7 @@ select
   null as columnvalue9,
   null as columnvalue10,
   yjlx as columnvalue11,--指标类型
-  yjsl as columnvalue12,--预警数量
+  coalesce(yjsl,0)::text as columnvalue12,--预警数量
   null as columnvalue13,
   null as columnvalue14,
   null as columnvalue15,
@@ -51,104 +51,213 @@ select
 	c_jbfyid,
 	'网拍'as yjlx,
 	sum(coalesce(n_wpcsz,0)) as yjsl
-from t_jspt_qd_zxss_llyj_gdtjq 
-where c_tjq like extract('year'from now())||'%'
+from t_jspt_qd_zxss_llyj
+where to_char(dt_jssj_1,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')
 group by c_jbfyid
 union all 
 select 
 	'0000185018620000'as c_jbfyid,
 	'网拍'as yjlx,
 	sum(coalesce(n_wpcsz,0)) as yjsl
-from t_jspt_qd_zxss_llyj_gdtjq 
-where c_tjq like extract('year'from now())||'%'
+from t_jspt_qd_zxss_llyj 
+where to_char(dt_jssj_1,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')
 union all 
 select 
 	c_jbfyid,
 	'案款发放'as yjlx,
 	sum(coalesce(n_sfakffz,0)) as yjsl
-from t_jspt_qd_zxss_llyj_gdtjq 
-where c_tjq like extract('year'from now())||'%'
+from t_jspt_qd_zxss_llyj 
+where to_char(dt_jssj_2,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')
 group by c_jbfyid
 union all 
 select 
 	'0000185018620000'as c_jbfyid,
 	'案款发放'as yjlx,
 	sum(coalesce(n_sfakffz,0)) as yjsl
-from t_jspt_qd_zxss_llyj_gdtjq 
-where c_tjq like extract('year'from now())||'%'
+from t_jspt_qd_zxss_llyj 
+where to_char(dt_jssj_2,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')
 union all 
 select 
 	c_jbfyid,
 	'结案'as yjlx,
 	sum(coalesce(n_jayjz,0)) as yjsl
-from t_jspt_qd_zxss_llyj_gdtjq 
-where c_tjq like extract('year'from now())||'%'
+from t_jspt_qd_zxss_llyj 
+where to_char(dt_jssj_3,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')
 group by c_jbfyid
 union all 
 select 
 	'0000185018620000'as c_jbfyid,
 	'结案'as yjlx,
 	sum(coalesce(n_jayjz,0)) as yjsl
-from t_jspt_qd_zxss_llyj_gdtjq 
-where c_tjq like extract('year'from now())||'%'
+from t_jspt_qd_zxss_llyj 
+where to_char(dt_jssj_3,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')
 union all 
 select 
 	c_jbfyid,
 	'执行通知' as yjlx,
 	sum(coalesce(n_jdaj_sdz,0))as yjsl
-from t_jspt_zxss_jdaj
-where c_tjq like extract('year'from now())||'%'
+from t_jspt_dp_zxss_jdaj
+where to_char(dt_jssj_1,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')
 group by c_jbfyid
 union all 
 select 
 	'0000185018620000' as c_jbfyid,
 	'执行通知' as yjlx,
 	sum(coalesce(n_jdaj_sdz,0))as yjsl
-from t_jspt_zxss_jdaj
-where c_tjq like extract('year'from now())||'%' and  c_hddc='执行通知'
+from t_jspt_dp_zxss_jdaj
+where to_char(dt_jssj_1,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd') and  c_hddc='执行通知'
 
 union all 
 select 
 	c_jbfyid,
 	'总对总查询' as yjlx,
 	sum(coalesce(n_jdaj_sdz,0))as yjsl
-from t_jspt_zxss_jdaj
-where c_tjq like extract('year'from now())||'%'and  c_hddc='点对点查控'
+from t_jspt_dp_zxss_jdaj
+where to_char(dt_jssj_1,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd') and c_hddc='点对点查控'
 group by c_jbfyid
 union all 
 select 
 	'0000185018620000' as c_jbfyid,
 	'总对总查询' as yjlx,
 	sum(coalesce(n_jdaj_sdz,0))as yjsl
-from t_jspt_zxss_jdaj
-where c_tjq like extract('year'from now())||'%'and  c_hddc='点对点查控'
+from t_jspt_dp_zxss_jdaj
+where to_char(dt_jssj_1,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')and  c_hddc='点对点查控'
 union all 
 select 
 	c_jbfyid,
 	'终本约谈' as yjlx,
 	sum(coalesce(n_jdaj_sdz,0))as yjsl
-from t_jspt_zxss_jdaj
-where c_tjq like extract('year'from now())||'%'and  c_hddc='终本约谈'
+from t_jspt_dp_zxss_jdaj
+where to_char(dt_jssj_1,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')and  c_hddc='终本约谈'
 group by c_jbfyid
 union all 
 select 
 	'0000185018620000' as c_jbfyid,
 	'终本约谈' as yjlx,
 	sum(coalesce(n_jdaj_sdz,0))as yjsl
-from t_jspt_zxss_jdaj
-where c_tjq like extract('year'from now())||'%'and  c_hddc='终本约谈'
+from t_jspt_dp_zxss_jdaj
+where to_char(dt_jssj_1,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')and  c_hddc='终本约谈'
 )llyj
 on fy.c_fy = substr(llyj.c_jbfyid,5)
+
 )llyj
 union all
 --拍卖测试数据
-select * from "db_dpzjk"."d_testData_qd"
+select 
+public.uuid_generate_v1() as id,
+  schemaid,
+  now() as gathertime,
+  now() as recordtime,
+  columnvalue1,
+  columnvalue2,
+  columnvalue3,
+  columnvalue4,
+  columnvalue5,
+  columnvalue6,
+  columnvalue7,
+  columnvalue8,
+  columnvalue9,
+  columnvalue10,
+  columnvalue11,
+  columnvalue12,
+  columnvalue13,
+  columnvalue14 ,
+  columnvalue15 ,
+  columnvalue16 ,
+  columnvalue17 ,
+  columnvalue18 ,
+  columnvalue19 ,
+  columnvalue20 ,
+  columnvalue21 ,
+  columnvalue22 ,
+  columnvalue23 ,
+  columnvalue24 ,
+  columnvalue25 ,
+  columnvalue26 ,
+  columnvalue27 ,
+  columnvalue28 ,
+  columnvalue29 ,
+  columnvalue30 ,
+  extendvalue  
+ from "db_dpzjk"."d_testData_qd"
 where schemaid='zxss_ccpm_pmjd' 
 union all 
-select * from "db_dpzjk"."d_testData_qd"
+select 
+public.uuid_generate_v1() as id,
+  schemaid,
+  now() as gathertime,
+  now() as recordtime,
+  columnvalue1,
+  columnvalue2,
+  columnvalue3,
+  columnvalue4,
+  columnvalue5,
+  columnvalue6,
+  columnvalue7,
+  columnvalue8,
+  columnvalue9,
+  columnvalue10,
+  columnvalue11,
+  columnvalue12,
+  columnvalue13,
+  columnvalue14 ,
+  columnvalue15 ,
+  columnvalue16 ,
+  columnvalue17 ,
+  columnvalue18 ,
+  columnvalue19 ,
+  columnvalue20 ,
+  columnvalue21 ,
+  columnvalue22 ,
+  columnvalue23 ,
+  columnvalue24 ,
+  columnvalue25 ,
+  columnvalue26 ,
+  columnvalue27 ,
+  columnvalue28 ,
+  columnvalue29 ,
+  columnvalue30 ,
+  extendvalue  
+ from "db_dpzjk"."d_testData_qd"
 where schemaid='zxss_wpsj_ajje' 
 union all 
-select * from "db_dpzjk"."d_testData_qd"
+select 
+public.uuid_generate_v1() as id,
+  schemaid,
+  now() as gathertime,
+  now() as recordtime,
+  columnvalue1,
+  columnvalue2,
+  columnvalue3,
+  columnvalue4,
+  columnvalue5,
+  columnvalue6,
+  columnvalue7,
+  columnvalue8,
+  columnvalue9,
+  columnvalue10,
+  columnvalue11,
+  columnvalue12,
+  columnvalue13,
+  columnvalue14 ,
+  columnvalue15 ,
+  columnvalue16 ,
+  columnvalue17 ,
+  columnvalue18 ,
+  columnvalue19 ,
+  columnvalue20 ,
+  columnvalue21 ,
+  columnvalue22 ,
+  columnvalue23 ,
+  columnvalue24 ,
+  columnvalue25 ,
+  columnvalue26 ,
+  columnvalue27 ,
+  columnvalue28 ,
+  columnvalue29 ,
+  columnvalue30 ,
+  extendvalue  
+ from "db_dpzjk"."d_testData_qd"
 where schemaid='zxss_wpsj_pmxx' 
 -- 网络拍卖-拍卖阶段
 /*select 	
@@ -304,7 +413,7 @@ select
   null as columnvalue9,
   null as columnvalue10,
   ajlx as columnvalue11,--案件类型
-  ajsl as columnvalue12,--案件数量
+  ajsl::text as columnvalue12,--案件数量
   cssj as columnvalue13,--超时阶段
   null as columnvalue14,
   null as columnvalue15,
@@ -468,7 +577,7 @@ select
   null as columnvalue9,
   null as columnvalue10,
   lx as columnvalue11,--案件类型
-  ajs as columnvalue12,--案件数量
+  ajs::text as columnvalue12,--案件数量
   null as columnvalue13,
   null as columnvalue14,
   null as columnvalue15,
@@ -592,8 +701,8 @@ select
   null as columnvalue10,
   ajlx as columnvalue11,--案件类型
   jdlx as columnvalue12,--节点类型
-  jdzs as columnvalue13,--节点总数
-  jdcq as columnvalue14,--节点超期
+  jdzs::text as columnvalue13,--节点总数
+  jdcq::text as columnvalue14,--节点超期
   null as columnvalue15,
   null as columnvalue16,
   null as columnvalue17,
@@ -627,10 +736,10 @@ FROM
 	db_dpzjk.t_jspt_dp_zxss_jdaj_gdtjq lcjd left join db_dpzjk.d_zxlcjdmc wd on lcjd.c_hddc = wd.dp_jdjc
 inner join d_fy_qd fy  on fy.c_fy = substr(lcjd.c_jbfyid,5)
 where dp_jddm is not null and c_fy is not null and lcjd.c_tjq like (extract('year' from now())||'%'::text)
-GROUP BY fy.c_fy,c_hddc,wd.dp_jddm,c_ajzlbdm
+GROUP BY fy.c_fy,c_hddc,wd.dp_jddm,c_ajzlbdm,wd.dp_jdjc
 union all 
 SELECT
-	'0000185018620000'as as fywd,
+	'0000185018620000' as fywd,
 	c_hddc,
 	wd.dp_jdjc as jdlcwd,
 	case when c_ajzlbdm = '100101' then '首次执行' 
@@ -641,7 +750,7 @@ SELECT
 FROM
 	db_dpzjk.t_jspt_dp_zxss_jdaj_gdtjq lcjd left join db_dpzjk.d_zxlcjdmc wd on lcjd.c_hddc = wd.dp_jdjc
 where dp_jddm is not null and lcjd.c_tjq like (extract('year' from now())||'%'::text)
-GROUP BY c_hddc,wd.dp_jddm,c_ajzlbdm
+GROUP BY c_hddc,wd.dp_jddm,c_ajzlbdm,wd.dp_jdjc
 union all 
 --案件总数
 SELECT
@@ -656,10 +765,10 @@ FROM
 	db_dpzjk.t_jspt_dp_zxss_jdaj_gdtjq lcjd left join db_dpzjk.d_zxlcjdmc wd on lcjd.c_hddc = wd.dp_jdjc
 inner join d_fy_qd fy  on fy.c_fy = substr(lcjd.c_jbfyid,5)
 where dp_jddm is not null and c_fy is not null and lcjd.c_tjq like (extract('year' from now())||'%'::text)
-GROUP BY fy.c_fy,c_hddc,wd.dp_jddm
+GROUP BY fy.c_fy,c_hddc,wd.dp_jddm,wd.dp_jdjc
 union all 
 SELECT
-	'0000185018620000'as as fywd,
+	'0000185018620000' as fywd,
 	c_hddc,
 	wd.dp_jdjc as jdlcwd,
 	'全部案件' as c_ajzlb,
@@ -669,12 +778,12 @@ SELECT
 FROM
 	db_dpzjk.t_jspt_dp_zxss_jdaj_gdtjq lcjd left join db_dpzjk.d_zxlcjdmc wd on lcjd.c_hddc = wd.dp_jdjc
 where dp_jddm is not null  and lcjd.c_tjq like (extract('year' from now())||'%'::text)
-GROUP BY c_hddc,wd.dp_jddm
+GROUP BY c_hddc,wd.dp_jddm,wd.dp_jdjc
 )
 
 select  
 	fywd,
-	c_ajzlbdm as ajlx,
+	c_ajzlb as ajlx,
 	jdlcwd as jdlx,
 	ajs as jdzs,
 	cqs as jdcq

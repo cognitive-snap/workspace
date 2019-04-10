@@ -18,8 +18,8 @@ select
   null as columnvalue9,
   null as columnvalue10,
   ajlx as columnvalue11,-- 案件类型
-  yjs as columnvalue12,-- 已结案件数
-  wjs as columnvalue13,-- 未结案件数
+  yjs::text as columnvalue12,-- 已结案件数
+  wjs::text as columnvalue13,-- 未结案件数
   null as columnvalue14,
   null as columnvalue15,
   null as columnvalue16,
@@ -40,7 +40,7 @@ select
   null as extendvalue 
 from (
 select 
-fy.c_fy,
+fy.c_fy as fywd,
 aj.ajlx,
 aj.yjs,
 aj.wjs
@@ -180,7 +180,7 @@ select
   null as columnvalue9,
   null as columnvalue10,
   sxlx as columnvalue11,--筛选类型
-  ajs as columnvalue12,-- 案件数
+  coalesce(ajs,0)::text as columnvalue12,-- 案件数
   null as columnvalue13,
   null as columnvalue14,
   null as columnvalue15,
@@ -250,6 +250,47 @@ where c_fy!='185018620000'
 
 
 union all
+select 	
+  public.uuid_generate_v1() as id,
+  schemaid,
+  now() as gathertime,
+  now() as recordtime,
+  columnvalue1,
+  columnvalue2,
+  columnvalue3,
+  columnvalue4,
+  columnvalue5,
+  columnvalue6,
+  columnvalue7,
+  columnvalue8,
+  columnvalue9,
+  columnvalue10,
+  columnvalue11,
+  columnvalue12,
+  columnvalue13,
+  columnvalue14 ,
+  columnvalue15 ,
+  columnvalue16 ,
+  columnvalue17 ,
+  columnvalue18 ,
+  columnvalue19 ,
+  columnvalue20 ,
+  columnvalue21 ,
+  columnvalue22 ,
+  columnvalue23 ,
+  columnvalue24 ,
+  columnvalue25 ,
+  columnvalue26 ,
+  columnvalue27 ,
+  columnvalue28 ,
+  columnvalue29 ,
+  columnvalue30 ,
+  extendvalue  
+  from 
+"db_dpzjk"."d_testData_qd"
+where schemaid ='zxsc_zxsclalxhfx'
+
+/*
 -- 执行审查类案类型化分析
 select 
   public.uuid_generate_v1() as id,
@@ -295,7 +336,7 @@ from (
 
 )zxsclalxhfx
 
-
+*/
 union all
 -- 近年收案数量曲线图-本年
 select 
@@ -313,8 +354,8 @@ select
   null as columnvalue8,
   null as columnvalue9,
   null as columnvalue10,
-  yf as columnvalue11,--月份
-  ajs as columnvalue12,--案件数
+  yf::text as columnvalue11,--月份
+  coalesce(ajs,0)::text as columnvalue12,--案件数
   null as columnvalue13,
   null as columnvalue14,
   null as columnvalue15,
@@ -380,7 +421,7 @@ select
   null as columnvalue9,
   null as columnvalue10,
   nf as columnvalue11,--年份
-  ajs as columnvalue12,--案件数
+  coalesce(ajs,0)::text as columnvalue12,--案件数
   null as columnvalue13,
   null as columnvalue14,
   null as columnvalue15,
@@ -473,17 +514,17 @@ where c_tjq like extract('year' from now())||'%'
 group by c_tjq
 union all
 select 
-	'0000185018620000' as c_jbfyid, ,
+	'0000185018620000' as c_jbfyid, 
 	substr(c_tjq,1,4) as nf,
 	sum(coalesce(n_xsajs_zxz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
 right join d_fy_qd fy on fy.c_fy = substr(sja.c_jbfyid,5)
 where c_tjq like extract('year' from now()+interval'-1 year')||'%'
-group by c_jbfyid,c_tjq
+group by c_tjq
 
 union all
 select 
-	'0000185018620000' as c_jbfyid, ,
+	'0000185018620000' as c_jbfyid, 
 	substr(c_tjq,1,4) as nf,
 	sum(coalesce(n_xsajs_zxz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
@@ -491,7 +532,7 @@ where c_tjq like extract('year' from now()+interval'-2 year')||'%'
 group by c_tjq
 union all
 select 
-	'0000185018620000' as c_jbfyid, ,
+	'0000185018620000' as c_jbfyid, 
 	substr(c_tjq,1,4) as nf,
 	sum(coalesce(n_xsajs_zxz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
@@ -500,7 +541,7 @@ group by c_tjq
 
 union all
 select 
-	'0000185018620000' as c_jbfyid, ,
+	'0000185018620000' as c_jbfyid, 
 	substr(c_tjq,1,4) as nf,
 	sum(coalesce(n_xsajs_zxz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
@@ -509,7 +550,7 @@ group by c_tjq
 
 union all
 select 
-	'0000185018620000' as c_jbfyid, ,
+	'0000185018620000' as c_jbfyid, 
 	substr(c_tjq,1,4) as nf,
 	sum(coalesce(n_xsajs_zxz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
