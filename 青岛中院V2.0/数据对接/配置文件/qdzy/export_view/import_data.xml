@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 首页 --> 
+<connect>	
+	<table>
+        <source_table>db_qdzy.z_visu_sy.dat</source_table>
+        <truncate>1</truncate>
+        <compute>1</compute>
+        <target_table>db_qdzy.z_visu_sy</target_table>
+    </table>
+</connect>
+<!-- 执行质效 --> 
+<connect>	
+	<table>
+        <source_table>db_qdzy.z_visu_zxzx.dat</source_table>
+        <truncate>1</truncate>
+        <compute>1</compute>
+        <target_table>db_qdzy.z_visu_zxzx</target_table>
+    </table>
+</connect>
+<!-- 执行实施 --> 
+<connect>	
+	<table>
+        <source_table>db_qdzy.z_visu_zxss.dat</source_table>
+        <truncate>1</truncate>
+        <compute>1</compute>
+        <target_table>db_qdzy.z_visu_zxss</target_table>
+    </table>
+</connect>
+<!-- 执行审查 --> 
+<connect>	
+	<table>
+        <source_table>db_qdzy.z_visu_zxsc.dat</source_table>
+        <truncate>1</truncate>
+        <compute>1</compute>
+        <target_table>db_qdzy.z_visu_zxsc</target_table>
+    </table>
+</connect>
+<!-- 执行信访 --> 
+<connect>	
+	<table>
+        <source_table>db_qdzy.z_visu_zxjd.dat</source_table>
+        <truncate>1</truncate>
+        <compute>1</compute>
+        <target_table>db_qdzy.z_visu_zxjd</target_table>
+    </table>
+</connect>
+
+<!-- 执行宣传 --> 
+<connect>	
+	<table>
+        <source_table>db_qdzy.z_visu_zxxc.dat</source_table>
+        <truncate>1</truncate>
+        <compute>1</compute>
+        <target_table>db_qdzy.z_visu_zxxc</target_table>
+    </table>
+</connect>
+<!-- 队伍建设 --> 
+<connect>	
+	<table>
+        <source_table>db_qdzy.z_visu_dwjs.dat</source_table>
+        <truncate>1</truncate>
+        <compute>1</compute>
+        <target_table>db_qdzy.z_visu_dwjs</target_table>
+    </table>
+</connect>

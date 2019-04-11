@@ -9,9 +9,9 @@
                 <KettleAction>
                     <com_name>com.thunisoft.stat.implCom.ExportData</com_name>
                     <func>execute</func>
-                    <DATASOURCE>qdzy_sy/qdzy_sy/DataSource_db_zjk.xml</DATASOURCE>
-                    <TABLES split="2">qdzy_sy/qdzy_sy/export_view/export_data.xml</TABLES>
-                    <OUTDIR>qdzy_sy/qdzy_sy/export_view/data</OUTDIR>
+                    <DATASOURCE>qdzy/qdzy/DataSource_db_zjk.xml</DATASOURCE>
+                    <TABLES split="2">qdzy/qdzy/export_view/export_data.xml</TABLES>
+                    <OUTDIR>qdzy/qdzy/export_view/data</OUTDIR>
                     <IS_FULL>1</IS_FULL>
                     <exportType>ARTERYBASE</exportType>
                 </KettleAction>
@@ -30,9 +30,9 @@
                 <KettleAction>
                     <com_name>com.thunisoft.stat.implCom.ImportData</com_name>
                     <func>execute</func>
-                    <DATASOURCE>qdzy_sy/qdzy_sy/DataSource_db_mb.xml</DATASOURCE>
-                    <TABLES split="2">qdzy_sy/qdzy_sy/export_view/import_data.xml</TABLES>
-                    <DATADIR>qdzy_sy/qdzy_sy/export_view/data</DATADIR>
+                    <DATASOURCE>qdzy/qdzy/DataSource_db_mb.xml</DATASOURCE>
+                    <TABLES split="2">qdzy/qdzy/export_view/import_data.xml</TABLES>
+                    <DATADIR>qdzy/qdzy/export_view/data</DATADIR>
                 </KettleAction>
             </MainActions>
             <CleanActions>

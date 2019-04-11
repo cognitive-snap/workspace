@@ -9,7 +9,7 @@
 <database>
     <connection>
         <driver>com.thunisoft.ArteryBase.Driver</driver>
-        <url>jdbc:ArteryBase://142.35.158.138:6543/db_dp_qdzy?charset=utf8
+        <url>jdbc:ArteryBase://142.35.158.138:6543/db_db_qdzy?charset=utf8
         </url>
         <username>qdzy</username>
         <password>123456</password>
