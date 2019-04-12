@@ -40,106 +40,64 @@ select
   null as extendvalue 
 from 
 (
+with llyj as(
 select 
-	fy.c_fy as fywd,
-	llyj.yjlx,
-	llyj.yjsl
-from d_fy_qd fy
-left join (
---统计期是减少3天
-select 
-	c_jbfyid,
-	'网拍'as yjlx,
-	sum(coalesce(n_wpcsz,0)) as yjsl
-from t_jspt_qd_zxss_llyj
-where to_char(dt_jssj_1,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')
-group by c_jbfyid
+c_fy as fywd,
+sum(coalesce(n_wpcsz,0)) as wp,
+sum(coalesce(n_sfakffz,0)) as akff,
+sum(coalesce(n_jayjz,0)) as ja
+from t_jspt_qd_zxss_llyj_gdtjq ll 
+right join d_fy_qd qd on qd.c_fy=substr(ll.c_jbfyid,5)
+where substr(c_tjq,1,4)<='2018'
+group by c_fy
+),
+jdaj as(
+select
+c_fy as fywd,
+c_hddc,
+sum(coalesce(n_jdaj_sdz,0))as jdaj
+from t_jspt_dp_zxss_jdaj_gdtjq jd
+right join d_fy_qd qd on qd.c_fy=substr(jd.c_jbfyid,5)
+where substr(c_tjq,1,4)<='2018'
+group by c_fy,c_hddc
+)
+
+select fywd,'网拍' as yjlx,wp as yjsl from llyj
 union all 
-select 
-	'0000185018620000'as c_jbfyid,
-	'网拍'as yjlx,
-	sum(coalesce(n_wpcsz,0)) as yjsl
-from t_jspt_qd_zxss_llyj 
-where to_char(dt_jssj_1,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')
-union all 
-select 
-	c_jbfyid,
-	'案款发放'as yjlx,
-	sum(coalesce(n_sfakffz,0)) as yjsl
-from t_jspt_qd_zxss_llyj 
-where to_char(dt_jssj_2,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')
-group by c_jbfyid
-union all 
-select 
-	'0000185018620000'as c_jbfyid,
-	'案款发放'as yjlx,
-	sum(coalesce(n_sfakffz,0)) as yjsl
-from t_jspt_qd_zxss_llyj 
-where to_char(dt_jssj_2,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')
-union all 
-select 
-	c_jbfyid,
-	'结案'as yjlx,
-	sum(coalesce(n_jayjz,0)) as yjsl
-from t_jspt_qd_zxss_llyj 
-where to_char(dt_jssj_3,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')
-group by c_jbfyid
-union all 
-select 
-	'0000185018620000'as c_jbfyid,
-	'结案'as yjlx,
-	sum(coalesce(n_jayjz,0)) as yjsl
-from t_jspt_qd_zxss_llyj 
-where to_char(dt_jssj_3,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')
-union all 
-select 
-	c_jbfyid,
-	'执行通知' as yjlx,
-	sum(coalesce(n_jdaj_sdz,0))as yjsl
-from t_jspt_dp_zxss_jdaj
-where to_char(dt_jssj_1,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')
-group by c_jbfyid
-union all 
-select 
-	'0000185018620000' as c_jbfyid,
-	'执行通知' as yjlx,
-	sum(coalesce(n_jdaj_sdz,0))as yjsl
-from t_jspt_dp_zxss_jdaj
-where to_char(dt_jssj_1,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd') and  c_hddc='执行通知'
+select '185018620000' as fywd,'网拍' as yjlx,sum(wp) as yjsl from llyj
 
 union all 
-select 
-	c_jbfyid,
-	'总对总查询' as yjlx,
-	sum(coalesce(n_jdaj_sdz,0))as yjsl
-from t_jspt_dp_zxss_jdaj
-where to_char(dt_jssj_1,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd') and c_hddc='点对点查控'
-group by c_jbfyid
-union all 
-select 
-	'0000185018620000' as c_jbfyid,
-	'总对总查询' as yjlx,
-	sum(coalesce(n_jdaj_sdz,0))as yjsl
-from t_jspt_dp_zxss_jdaj
-where to_char(dt_jssj_1,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')and  c_hddc='点对点查控'
-union all 
-select 
-	c_jbfyid,
-	'终本约谈' as yjlx,
-	sum(coalesce(n_jdaj_sdz,0))as yjsl
-from t_jspt_dp_zxss_jdaj
-where to_char(dt_jssj_1,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')and  c_hddc='终本约谈'
-group by c_jbfyid
-union all 
-select 
-	'0000185018620000' as c_jbfyid,
-	'终本约谈' as yjlx,
-	sum(coalesce(n_jdaj_sdz,0))as yjsl
-from t_jspt_dp_zxss_jdaj
-where to_char(dt_jssj_1,'yyyyMMdd')<=to_char(now()-interval'3day','yyyyMMdd')and  c_hddc='终本约谈'
-)llyj
-on fy.c_fy = substr(llyj.c_jbfyid,5)
 
+select fywd,'案款发放' as yjlx,akff as yjsl from llyj
+union all 
+select '185018620000' as fywd,'案款发放' as yjlx,sum(akff) as yjsl from llyj
+
+union all 
+
+select fywd,'结案' as yjlx,ja as yjsl from llyj
+union all 
+select '185018620000' as fywd,'结案' as yjlx,sum(ja) as yjsl from llyj
+
+union all 
+
+select fywd,'执行通知' as yjlx,sum(jdaj) as yjsl from jdaj where c_hddc='执行通知' group by fywd
+union all 
+select '185018620000' as fywd,'执行通知' as yjlx,sum(jdaj) as yjsl from jdaj where c_hddc='执行通知'
+
+union all 
+
+select fywd,'总对总查询' as yjlx,sum(jdaj) as yjsl from jdaj where c_hddc='点对点查控' group by fywd
+union all 
+select '185018620000' as fywd,'总对总查询' as yjlx,sum(jdaj) as yjsl from jdaj where c_hddc='点对点查控'
+
+union all 
+
+
+select c_fy,'终本约谈' as yjlx,COALESCE(yjsl,0) as yjsl from(
+select fywd,sum(jdaj) as yjsl from jdaj where c_hddc='终本约谈' group by fywd
+) yt right join d_fy_qd qd on qd.c_fy=yt.fywd
+union all 
+select '185018620000' as fywd,'终本约谈' as yjlx,COALESCE(sum(jdaj),0) as yjsl from jdaj where c_hddc='终本约谈'
 )llyj
 union all
 --拍卖测试数据
@@ -599,87 +557,34 @@ select
   null as extendvalue 
 from 
 (
-with ajph as (
+with dtjd as(
 select 
-	fy.c_fy as fywd,
-	'总监控数' as lx,
-	coalesce(ajs,0) as ajs
-from (
-SELECT
-  c_jbfyid,
-	sum(coalesce(n_jdaj_sdz,0)) as ajs
+c_fy as fywd,
+sum(coalesce(n_jdaj_sdz,0)) as zjks,
+sum(COALESCE(n_cqs_sdz,0)) as cqs
 FROM
-	db_dpzjk.t_jspt_dp_zxss_jdaj_gdtjq 
-where   c_tjq like (extract('year' from now())||'%'::text) 
-GROUP BY c_jbfyid
+db_dpzjk.t_jspt_dp_zxss_jdaj_gdtjq  jd
+right join d_fy_qd qd on qd.c_fy=substr(jd.c_jbfyid,5)
+where   substr(c_tjq,1,4)='2018' 
+group by c_fy
+) 
+
+select fywd,'总监控数' as lx,zjks as ajs from dtjd
 union all 
-SELECT
-  '0000185018620000'as c_jbfyid,
-	sum(coalesce(n_jdaj_sdz,0)) as ajs
-FROM
-	db_dpzjk.t_jspt_dp_zxss_jdaj_gdtjq 
-where   c_tjq like (extract('year' from now())||'%'::text) 
-)ajsl
-right join d_fy_qd fy on fy.c_fy = substr(ajsl.c_jbfyid,5)
-group by fy.c_fy,ajsl.ajs
+select '185018620000' as fywd,'总监控数' as lx,sum(zjks) as ajs from dtjd
+
+union all
+
+select fywd,'超期数' as lx,cqs as ajs from dtjd
+union all 
+select '185018620000' as fywd,'超期数' as lx,sum(cqs) as ajs from dtjd
 
 union all 
-select 
-	fy.c_fy as fywd,
-	'超期数' as lx,
-	coalesce(ajs,0) as ajs
-from (
-SELECT
-  c_jbfyid,
-	sum(coalesce(n_cqs_sdz,0)) as ajs
-FROM
-	db_dpzjk.t_jspt_dp_zxss_jdaj_gdtjq 
-where   c_tjq like (extract('year' from now())||'%'::text) 
-GROUP BY c_jbfyid
+
+select fywd,'正常数' as lx,(zjks-cqs) as ajs from dtjd
 union all 
-SELECT
-  '0000185018620000'as c_jbfyid,
-	sum(coalesce(n_cqs_sdz,0)) as ajs
-FROM
-	db_dpzjk.t_jspt_dp_zxss_jdaj_gdtjq 
-where   c_tjq like (extract('year' from now())||'%'::text) 
-
-)ajsl
-right join d_fy_qd fy on fy.c_fy = substr(ajsl.c_jbfyid,5)
-group by fy.c_fy,ajsl.ajs
-union all 
-select 
-	fy.c_fy as fywd,
-	'正常数' as lx,
-	coalesce(ajs,0) as ajs
-from (
-SELECT
-  c_jbfyid,
-	(sum(coalesce(n_jdaj_sdz,0)) - sum(coalesce(n_cqs_sdz,0))) as ajs
-FROM
-	db_dpzjk.t_jspt_dp_zxss_jdaj_gdtjq 
-where   c_tjq like (extract('year' from now())||'%'::text) 
-GROUP BY c_jbfyid
-union all 
-SELECT
-  '0000185018620000'as c_jbfyid,
-	(sum(coalesce(n_jdaj_sdz,0)) - sum(coalesce(n_cqs_sdz,0))) as ajs
-FROM
-	db_dpzjk.t_jspt_dp_zxss_jdaj_gdtjq 
-where   c_tjq like (extract('year' from now())||'%'::text) 
-
-)ajsl
-right join d_fy_qd fy on fy.c_fy = substr(ajsl.c_jbfyid,5)
-group by fy.c_fy,ajsl.ajs
-)
-select 
-	fywd,
-	lx,
-	ajs
-from ajph
-
-
-)dtjd
+select '185018620000' as fywd,'正常数' as lx,sum(zjks-cqs) as ajs from dtjd
+) dtjd
 
 
 union all
@@ -735,11 +640,11 @@ SELECT
 FROM
 	db_dpzjk.t_jspt_dp_zxss_jdaj_gdtjq lcjd left join db_dpzjk.d_zxlcjdmc wd on lcjd.c_hddc = wd.dp_jdjc
 inner join d_fy_qd fy  on fy.c_fy = substr(lcjd.c_jbfyid,5)
-where dp_jddm is not null and c_fy is not null and lcjd.c_tjq like (extract('year' from now())||'%'::text)
+where dp_jddm is not null and c_fy is not null and substr(lcjd.c_tjq,1,4)='2018' 
 GROUP BY fy.c_fy,c_hddc,wd.dp_jddm,c_ajzlbdm,wd.dp_jdjc
 union all 
 SELECT
-	'0000185018620000' as fywd,
+	'185018620000' as fywd,
 	c_hddc,
 	wd.dp_jdjc as jdlcwd,
 	case when c_ajzlbdm = '100101' then '首次执行' 
@@ -749,7 +654,7 @@ SELECT
 	(sum(coalesce(n_jdaj_sdz,0)) - sum(coalesce(n_cqs_sdz,0))) as zcs
 FROM
 	db_dpzjk.t_jspt_dp_zxss_jdaj_gdtjq lcjd left join db_dpzjk.d_zxlcjdmc wd on lcjd.c_hddc = wd.dp_jdjc
-where dp_jddm is not null and lcjd.c_tjq like (extract('year' from now())||'%'::text)
+where dp_jddm is not null and substr(lcjd.c_tjq,1,4)='2018' 
 GROUP BY c_hddc,wd.dp_jddm,c_ajzlbdm,wd.dp_jdjc
 union all 
 --案件总数
@@ -764,11 +669,11 @@ SELECT
 FROM
 	db_dpzjk.t_jspt_dp_zxss_jdaj_gdtjq lcjd left join db_dpzjk.d_zxlcjdmc wd on lcjd.c_hddc = wd.dp_jdjc
 inner join d_fy_qd fy  on fy.c_fy = substr(lcjd.c_jbfyid,5)
-where dp_jddm is not null and c_fy is not null and lcjd.c_tjq like (extract('year' from now())||'%'::text)
+where dp_jddm is not null and c_fy is not null and substr(lcjd.c_tjq,1,4)='2018' 
 GROUP BY fy.c_fy,c_hddc,wd.dp_jddm,wd.dp_jdjc
 union all 
 SELECT
-	'0000185018620000' as fywd,
+	'185018620000' as fywd,
 	c_hddc,
 	wd.dp_jdjc as jdlcwd,
 	'全部案件' as c_ajzlb,
@@ -777,7 +682,7 @@ SELECT
 	(sum(coalesce(n_jdaj_sdz,0)) - sum(coalesce(n_cqs_sdz,0))) as zcs
 FROM
 	db_dpzjk.t_jspt_dp_zxss_jdaj_gdtjq lcjd left join db_dpzjk.d_zxlcjdmc wd on lcjd.c_hddc = wd.dp_jdjc
-where dp_jddm is not null  and lcjd.c_tjq like (extract('year' from now())||'%'::text)
+where dp_jddm is not null  and substr(lcjd.c_tjq,1,4)='2018'
 GROUP BY c_hddc,wd.dp_jddm,wd.dp_jdjc
 )
 
