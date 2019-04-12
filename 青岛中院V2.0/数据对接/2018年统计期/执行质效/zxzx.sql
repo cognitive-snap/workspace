@@ -51,7 +51,7 @@ sum(n_sp_zxwbajsz) as fz,
 sum(n_yjajs_zxz) as fm 
 from t_jspt_qd_zxzx_zxwbl_gdtjq zxwb
 right join d_fy_qd qd on qd.c_fy=substr(zxwb.c_jbfyid,5)
-where c_tjq like extract(year from now())||'%'
+where substr(c_tjq,1,4)='2018'
 group by c_fy
 ) zxwb
 
@@ -67,10 +67,10 @@ select
 c_fy,
 sum(n_fdqxjasz) as fz,
 sum(n_sczxajjasz) as fm
-from 
+from
 t_jspt_qd_zxzx_fdqxnjal_gdtjq fdja
 right join d_fy_qd qd on qd.c_fy=substr(fdja.c_jbfyid,5)
-where c_tjq like extract(year from now())||'%'
+where substr(c_tjq,1,4)='2018'
 group by c_fy
 ) fdjal
 
@@ -166,7 +166,7 @@ sum(n_sp_zxwbajsz) as fz,
 sum(n_yjajs_zxz) as fm 
 from t_jspt_qd_zxzx_zxwbl_gdtjq zxwb 
 right join d_fy_qd qd on qd.c_fy=substr(zxwb.c_jbfyid,5)
-where c_tjq like extract(year from now())||'%'
+where substr(c_tjq,1,4)='2018'
 group by c_fy
 ),
 hfwb as (
@@ -177,7 +177,7 @@ sum(n_zxzb_hfzxajz) as fm
 from 
 t_jspt_qd_zxzx_hfzxwbl_gdtjq hfzx
 right join d_fy_qd qd on qd.c_fy=substr(hfzx.c_jbfyid,5)
-where c_tjq like extract(year from now())||'%'
+where substr(c_tjq,1,4)='2018'
 group by c_fy
 ),
 pjys as (
@@ -187,7 +187,7 @@ n_zxzb_hfzxajz as ajs,
 COALESCE(date_part('day', (dt_jasj::TIMESTAMP-d_hclarq::TIMESTAMP)),0) as sj
 from 
 t_jspt_qd_zxzx_hfzxpjys
-where to_char(dt_kssj_1,'yyyy')=to_char(now(),'yyyy')
+where to_char(dt_kssj_1,'yyyy')='2018'
 ),
 dwl as (
 select 
@@ -196,7 +196,7 @@ sum(n_sjdwje) as fz,
 sum(n_sqzxbdje) as fm
 from t_jspt_qd_zxzx_sjzxdwl dwl
 right join d_fy_qd qd on qd.c_fy=substr(dwl.c_jbfyid,5)
-where to_char(dt_kssj_1,'yyyy')=to_char(now(),'yyyy')
+where to_char(dt_kssj_1,'yyyy')='2018'
 group by c_fy
 )
 
@@ -318,8 +318,9 @@ COALESCE(sum(n_sp_zxwbajsz),0) as fz,
 COALESCE(sum(n_yjajs_zxz),0) as fm
 from t_jspt_qd_zxzx_zxwbl wb
 right join d_fy_qd qd on qd.c_fy=substr(wb.c_jbfyid,5)
-where to_char(dt_kssj_1,'yyyymm') between to_char(now()+'-11 month','yyyymm') and to_char(now(),'yyyymm')
+where to_char(dt_kssj_1,'yyyymm') between to_char(now()+'-17 month','yyyymm') and to_char(now()+'-6 month','yyyymm')
 group by c_fy,to_char(dt_kssj_1,'yyyymm')
+order by c_fy
 ) zxwbl
 
 union all 
@@ -337,7 +338,7 @@ COALESCE(sum(n_zxzb_zxwbz),0) as fz,
 COALESCE(sum(n_zxzb_hfzxajz),0) as fm
 from t_jspt_qd_zxzx_hfzxwbl hfwb
 right join d_fy_qd qd on qd.c_fy=substr(hfwb.c_jbfyid,5)
-where to_char(dt_kssj_1,'yyyymm') between to_char(now()+'-11 month','yyyymm') and to_char(now(),'yyyymm')
+where to_char(dt_kssj_1,'yyyymm') between to_char(now()+'-17 month','yyyymm') and to_char(now()+'-6 month','yyyymm')
 group by c_fy,to_char(dt_kssj_1,'yyyymm')
 ) hfzxwbl
 
@@ -356,7 +357,7 @@ sum(COALESCE(date_part('day', (dt_jasj::TIMESTAMP-d_hclarq::TIMESTAMP)),0)) as f
 sum(n_zxzb_hfzxajz) as fm
 from t_jspt_qd_zxzx_hfzxpjys pj
 right join d_fy_qd qd on qd.c_fy=substr(pj.c_jbfyid,5)
-where to_char(dt_kssj_1,'yyyymm') between to_char(now()+'-11 month','yyyymm') and to_char(now(),'yyyymm')
+where to_char(dt_kssj_1,'yyyymm') between to_char(now()+'-17 month','yyyymm') and to_char(now()+'-6 month','yyyymm')
 group by c_fy,to_char(dt_kssj_1,'yyyymm')
 ) hfzxpjys
 
@@ -375,10 +376,11 @@ COALESCE(sum(n_sjdwje),0) as fz,
 COALESCE(sum(n_sqzxbdje),0) as fm
 from t_jspt_qd_zxzx_sjzxdwl dwl
 right join d_fy_qd qd on qd.c_fy=substr(dwl.c_jbfyid,5)
-where to_char(dt_kssj_1,'yyyymm') between to_char(now()+'-11 month','yyyymm') and to_char(now(),'yyyymm')
+where to_char(dt_kssj_1,'yyyymm') between to_char(now()+'-17 month','yyyymm') and to_char(now()+'-6 month','yyyymm')
 group by c_fy,to_char(dt_kssj_1,'yyyymm')
 ) sjzxdwl
 ) zxzx
+
 
 
 
