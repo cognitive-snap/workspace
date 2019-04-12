@@ -7,55 +7,36 @@
         <compute>1</compute>
         <target_table>db_qdzy.z_visu_sy</target_table>
     </table>
-</connect>
-<!-- 执行质效 --> 
-<connect>	
 	<table>
         <source_table>db_dpzjk.v_visu_zxzx</source_table>
         <truncate>1</truncate>
         <compute>1</compute>
         <target_table>db_qdzy.z_visu_zxzx</target_table>
     </table>
-</connect>
-<!-- 执行实施 --> 
-<connect>	
 	<table>
         <source_table>db_dpzjk.v_visu_zxss</source_table>
         <truncate>1</truncate>
         <compute>1</compute>
         <target_table>db_qdzy.z_visu_zxss</target_table>
     </table>
-</connect>
-<!-- 执行审查 --> 
-<connect>	
 	<table>
         <source_table>db_dpzjk.v_visu_zxsc</source_table>
         <truncate>1</truncate>
         <compute>1</compute>
         <target_table>db_qdzy.z_visu_zxsc</target_table>
     </table>
-</connect>
-<!-- 执行信访 --> 
-<connect>	
 	<table>
         <source_table>db_dpzjk.v_visu_zxjd</source_table>
         <truncate>1</truncate>
         <compute>1</compute>
         <target_table>db_qdzy.z_visu_zxjd</target_table>
     </table>
-</connect>
-
-<!-- 执行宣传 --> 
-<connect>	
 	<table>
         <source_table>db_dpzjk.v_visu_zxxc</source_table>
         <truncate>1</truncate>
         <compute>1</compute>
         <target_table>db_qdzy.z_visu_zxxc</target_table>
-    </table>
-</connect>
-<!-- 队伍建设 --> 
-<connect>	
+    </table>	
 	<table>
         <source_table>db_dpzjk.v_visu_dwjs</source_table>
         <truncate>1</truncate>
