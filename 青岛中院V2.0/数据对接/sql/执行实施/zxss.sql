@@ -477,7 +477,7 @@ right join d_fy_qd fy on fy.c_fy = substr(wjaj.c_jbfyid,5)
 group by ajlb,fy.c_fy 
 union all 
 select
-	'0000185018620000' as fywd,
+	'185018620000' as fywd,
 	'超一个月' as cqsj,
 	c_ajlb as ajlb,
 	sum(COALESCE(n_cqyywjz,0)::numeric) as sl
@@ -487,7 +487,7 @@ right join d_fy_qd fy on fy.c_fy = substr(wjaj.c_jbfyid,5)
 union ALL
 --超期两个月
 select
-	'0000185018620000' as fywd,
+	'185018620000' as fywd,
 	'超两个月' as cqsj,
 	c_ajlb as ajlb,
 	sum(COALESCE(n_t_cqlywjz,0)::numeric) as sl
@@ -497,7 +497,7 @@ right join d_fy_qd fy on fy.c_fy = substr(wjaj.c_jbfyid,5)
 --超期三个月
 union all
 select
-	'0000185018620000' as fywd,
+	'185018620000' as fywd,
 	'超三个月' as cqsj,
 	c_ajlb as ajlb,
 	sum(COALESCE(n_cqsywjz,0)::numeric) as sl
@@ -507,7 +507,7 @@ group by ajlb
 union all 
 --超期半年
 select 
-	'0000185018620000' as fywd,
+	'185018620000' as fywd,
 	'超半年以上' as cqsj,
 	c_ajlb as ajlb,
 	sum(coalesce(n_cqbnyswjz,0)::numeric) as sl
@@ -538,22 +538,24 @@ group by ajlb,fywd
 
 union all 
 --求各类案件类型占比
-select
-	fywd, 
-	null as cqsj,
-	case when 
-	(select sum(sl) from glwjaqk)::numeric=0 then 0
-else
-	round((sum(sl)::numeric)/1.0/((select sum(sl) from glwjaqk)::numeric)*100,1)
-	end  as ajsl,
-case 
-		when ajlb='刑事案件' then '刑事占比'
-		when ajlb='民事案件' then '民事占比'
-		when ajlb='行政案件' then '行政占比'
-		when ajlb='执行类案件' then '执行占比'
-	end  as ajlx
-from glwjaqk
-group by ajlb,fywd
+SELECT glwjaqk.fywd,
+            NULL::text AS cqsj,
+                CASE
+                    WHEN (zh = (0)::numeric) THEN (0)::numeric
+                    ELSE round((SUM(glwjaqk.sl) / 1.0 / zh * (100)::numeric), 1)
+                END AS ajsl,
+                CASE
+                    WHEN ((glwjaqk.ajlb)::text = '刑事案件'::text) THEN '刑事占比'::text
+                    WHEN ((glwjaqk.ajlb)::text = '民事案件'::text) THEN '民事占比'::text
+                    WHEN ((glwjaqk.ajlb)::text = '行政案件'::text) THEN '行政占比'::text
+                    WHEN ((glwjaqk.ajlb)::text = '执行类案件'::text) THEN '执行占比'::text
+                    ELSE NULL::text
+                END AS ajlx
+           FROM glwjaqk
+left join (
+select sum(sl) as zh,fywd from glwjaqk group by fywd
+)ajzh on ajzh.fywd=glwjaqk.fywd
+GROUP BY glwjaqk.ajlb, glwjaqk.fywd,ajzh.zh
 
 
 )cqwjaj

@@ -407,7 +407,7 @@ union all
 -- 近年收案数量曲线图-近五年
 select 
   public.uuid_generate_v1() as id,
-  'zxsc_jnsaslqxt_bn'as schemaid,
+  'zxsc_jnsaslqxt_j5n'as schemaid,
   now() as gathertime,
   now() as recordtime,
   null as columnvalue1,
