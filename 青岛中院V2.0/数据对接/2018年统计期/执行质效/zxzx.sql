@@ -305,12 +305,7 @@ select
   null as columnvalue30,
   null as extendvalue 
 from(
-select
-c_fy as fywd,
-'执行完毕率' as zxlx,
-yf,
-case when fm=0 then 0 else round(fz/1.0/fm*100,1) end as bz
-from(
+with zxwb as(
 select
 c_fy,
 to_char(dt_kssj_1,'yyyymm') as yf,
@@ -321,16 +316,8 @@ right join d_fy_qd qd on qd.c_fy=substr(wb.c_jbfyid,5)
 where to_char(dt_kssj_1,'yyyymm') between to_char(now()+'-17 month','yyyymm') and to_char(now()+'-6 month','yyyymm')
 group by c_fy,to_char(dt_kssj_1,'yyyymm')
 order by c_fy
-) zxwbl
-
-union all 
-
-select 
-c_fy as fywd,
-'恢复执行完毕率' as zxlx,
-yf,
-case when fm=0 then 0 else round(fz/1.0/fm*100,1) end as bz
-from(
+),
+hfzx as(
 select 
 c_fy,
 to_char(dt_kssj_1,'yyyymm') as yf,
@@ -340,16 +327,8 @@ from t_jspt_qd_zxzx_hfzxwbl hfwb
 right join d_fy_qd qd on qd.c_fy=substr(hfwb.c_jbfyid,5)
 where to_char(dt_kssj_1,'yyyymm') between to_char(now()+'-17 month','yyyymm') and to_char(now()+'-6 month','yyyymm')
 group by c_fy,to_char(dt_kssj_1,'yyyymm')
-) hfzxwbl
-
-union all 
-
-select 
-c_fy as fywd,
-'恢复执行平均用时' as zxlx,
-yf,
-case when fm=0 then 0 else round(fz::int/1.0/fm,1) end as bz
-from(
+),
+pjys as(
 select 
 c_fy,
 to_char(dt_kssj_1,'yyyymm') as yf,
@@ -359,16 +338,8 @@ from t_jspt_qd_zxzx_hfzxpjys pj
 right join d_fy_qd qd on qd.c_fy=substr(pj.c_jbfyid,5)
 where to_char(dt_kssj_1,'yyyymm') between to_char(now()+'-17 month','yyyymm') and to_char(now()+'-6 month','yyyymm')
 group by c_fy,to_char(dt_kssj_1,'yyyymm')
-) hfzxpjys
-
-union all 
---实际执行到位率
-select
-c_fy as fywd,
-'实际执行到位率' as zxlx,
-yf,
-case when fm=0 then 0 else round(fz/1.0/fm*100,1) end as bz
-from(
+),
+dwl as(
 select 
 c_fy,
 to_char(dt_kssj_1,'yyyymm') as yf,
@@ -378,7 +349,37 @@ from t_jspt_qd_zxzx_sjzxdwl dwl
 right join d_fy_qd qd on qd.c_fy=substr(dwl.c_jbfyid,5)
 where to_char(dt_kssj_1,'yyyymm') between to_char(now()+'-17 month','yyyymm') and to_char(now()+'-6 month','yyyymm')
 group by c_fy,to_char(dt_kssj_1,'yyyymm')
-) sjzxdwl
+)
+
+select c_fy as fywd,'执行完毕率' as zxlx,yf,
+case when fm=0 then 0 else round(fz/1.0/fm*100,1) end as bz from zxwb
+union all
+select '185018620000' as fywd,'执行完毕率' as zxlx,yf,
+case when sum(fm)=0 then 0 else round(sum(fz)/1.0/sum(fm)*100,1) end as bz from zxwb group by yf
+
+union all
+
+select c_fy as fywd,'恢复执行完毕率' as zxlx,yf,
+case when fm=0 then 0 else round(fz/1.0/fm*100,1) end as bz from hfzx
+union all
+select '185018620000' as fywd,'恢复执行完毕率' as zxlx,yf,
+case when sum(fm)=0 then 0 else round(sum(fz)/1.0/sum(fm)*100,1) end as bz from hfzx group by yf
+
+union all
+
+select c_fy as fywd,'恢复执行平均用时' as zxlx,yf,
+case when fm=0 then 0 else round(fz::int/1.0/fm,1) end as bz from pjys
+union all
+select '185018620000' as fywd,'恢复执行平均用时' as zxlx,yf,
+case when sum(fm)=0 then 0 else round(sum(fz::int)/1.0/sum(fm),1) end as bz from pjys group by yf
+
+union all
+
+select c_fy as fywd,'实际执行到位率' as zxlx,yf,
+case when fm=0 then 0 else round(fz/1.0/fm*100,1) end as bz from dwl
+union all
+select '185018620000' as fywd,'实际执行到位率' as zxlx,yf,
+case when sum(fm)=0 then 0 else round(sum(fz)/1.0/sum(fm)*100,1) end as bz from dwl group by yf
 ) zxzx
 
 
