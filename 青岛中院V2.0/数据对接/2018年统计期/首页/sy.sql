@@ -184,11 +184,11 @@ with ajs as(
 select 
 	c_fy as fywd,
   substr(c_tjq,1,4) as sj,
-  sum(coalesce(n_jcajs_zxz,0)+coalesce(n_xsajs_zxz,0)) as zs,
-	sum(COALESCE(n_jcajs_zxz,0)) as jc,
-  sum(COALESCE(n_wjajs_zxz,0)) as wj,
-	sum(COALESCE(n_xsajs_zxz,0)) as xs,
-  sum(COALESCE(n_yjajs_zxz,0)) as yj
+  sum(coalesce(n_zx_jcajz,0)+coalesce(n_zx_xsajz,0)) as zs,
+	sum(COALESCE(n_zx_jcajz,0)) as jc,
+  sum(COALESCE(n_zx_wjajz,0)) as wj,
+	sum(COALESCE(n_zx_xsajz,0)) as xs,
+  sum(COALESCE(n_zx_yjajz,0)) as yj
 from t_jspt_qd_sy_sjafx_mouth aj right join d_fy_qd qd on qd.c_fy=substr(aj.c_jbfyid,5)
 group by c_fy,substr(c_tjq,1,4)
 )
@@ -251,7 +251,7 @@ union all
 select fywd,'已结' as ajlx,yj as qntq from ajs where sj='2017'
 union all 
 select '185018620000' as fywd,'已结' as ajlx,sum(yj) as qntq from ajs where sj='2017'
-)qn on jn.fywd=qn.fywd and jn.ajlx=qn.ajlx
+)qn on jn.fywd=qn.fywd and jn.ajlx=qn.ajlx order by fywd
 )syajs
 
 union all 
@@ -574,7 +574,7 @@ select qd.c_fy,COALESCE(xs,0) as xs
 from(
 select
 c_fy,
-sum(n_xsajs_zxz) as xs
+sum(n_zx_xsajz) as xs
 from 
 t_jspt_qd_sy_sjafx sja
 right join d_fy_qd qd on qd.c_fy=substr(sja.c_jbfyid,5)
@@ -587,7 +587,7 @@ select qd.c_fy,COALESCE(yj,0) as yj
 from(
 select 
 c_fy,
-sum(n_yjajs_zxz) as yj
+sum(n_zx_yjajz) as yj
 from 
 t_jspt_qd_sy_sjafx sja
 right join d_fy_qd qd on qd.c_fy=substr(sja.c_jbfyid,5)
@@ -604,18 +604,6 @@ union all
 select c_fy as fywd,'已结' as lx,yj as ajs from yj
 union all 
 select '185018620000' as fywd,'已结' as lx,sum(yj) as ajs from yj
-) xsyj
+) xsyj;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+ALTER TABLE "db_dpzjk"."v_visu_sy" OWNER TO "dpzjk";
