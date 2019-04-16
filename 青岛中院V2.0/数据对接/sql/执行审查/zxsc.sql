@@ -1,6 +1,7 @@
 drop view if exists db_dpzjk.v_visu_zxsc;
 create view db_dpzjk.v_visu_zxsc as
 
+
 -- 执行案件分类
 select 
   public.uuid_generate_v1() as id,
@@ -385,7 +386,7 @@ left join (
 select 
 	c_jbfyid as fywd,
 	c_tjq,
-	sum(coalesce(n_xsajs_zxz,0))as ajs
+	sum(coalesce(n_zx_xsajz,0))as ajs
 from t_jspt_qd_sy_sjafx_mouth sja
 right join d_fy_qd fy on fy.c_fy = substr(sja.c_jbfyid,5)
 where c_tjq like extract('year' from now())||'%'
@@ -395,7 +396,7 @@ union all
 select 
 	'0000185018620000' as fywd,
 	c_tjq,
-	sum(coalesce(n_xsajs_zxz,0))as ajs
+	sum(coalesce(n_zx_xsajz,0))as ajs
 from t_jspt_qd_sy_sjafx_mouth sja
 where c_tjq like extract('year' from now())||'%'
 group by c_tjq
@@ -453,7 +454,7 @@ left join (
 select 
 	c_jbfyid ,
 	substr(c_tjq,1,4) as nf,
-	sum(coalesce(n_xsajs_zxz,0))as ajs
+	sum(coalesce(n_zx_xsajz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
 where c_tjq like extract('year' from now())||'%'
 group by c_jbfyid,c_tjq
@@ -461,7 +462,7 @@ union all
 select 
 	c_jbfyid ,
 	substr(c_tjq,1,4) as nf,
-	sum(coalesce(n_xsajs_zxz,0))as ajs
+	sum(coalesce(n_zx_xsajz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
 where c_tjq like extract('year' from now()+interval'-1 year')||'%'
 group by c_jbfyid,c_tjq
@@ -470,7 +471,7 @@ union all
 select 
 	c_jbfyid ,
 	substr(c_tjq,1,4) as nf,
-	sum(coalesce(n_xsajs_zxz,0))as ajs
+	sum(coalesce(n_zx_xsajz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
 where c_tjq like extract('year' from now()+interval'-2 year')||'%'
 group by c_jbfyid,c_tjq
@@ -478,7 +479,7 @@ union all
 select 
 	c_jbfyid ,
 	substr(c_tjq,1,4) as nf,
-	sum(coalesce(n_xsajs_zxz,0))as ajs
+	sum(coalesce(n_zx_xsajz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
 where c_tjq like extract('year' from now()+interval'-3 year')||'%'
 group by c_jbfyid,c_tjq
@@ -487,7 +488,7 @@ union all
 select 
 	c_jbfyid ,
 	substr(c_tjq,1,4) as nf,
-	sum(coalesce(n_xsajs_zxz,0))as ajs
+	sum(coalesce(n_zx_xsajz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
 where c_tjq like extract('year' from now()+interval'-4 year')||'%'
 group by c_jbfyid,c_tjq
@@ -496,7 +497,7 @@ union all
 select 
 	c_jbfyid ,
 	substr(c_tjq,1,4) as nf,
-	sum(coalesce(n_xsajs_zxz,0))as ajs
+	sum(coalesce(n_zx_xsajz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
 where c_tjq like extract('year' from now()+interval'-5 year')||'%'
 group by c_jbfyid,c_tjq
@@ -508,7 +509,7 @@ union all
 select 
 	'0000185018620000' as c_jbfyid,
 	substr(c_tjq,1,4) as nf,
-	sum(coalesce(n_xsajs_zxz,0))as ajs
+	sum(coalesce(n_zx_xsajz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
 where c_tjq like extract('year' from now())||'%'
 group by c_tjq
@@ -516,7 +517,7 @@ union all
 select 
 	'0000185018620000' as c_jbfyid, 
 	substr(c_tjq,1,4) as nf,
-	sum(coalesce(n_xsajs_zxz,0))as ajs
+	sum(coalesce(n_zx_xsajz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
 right join d_fy_qd fy on fy.c_fy = substr(sja.c_jbfyid,5)
 where c_tjq like extract('year' from now()+interval'-1 year')||'%'
@@ -526,7 +527,7 @@ union all
 select 
 	'0000185018620000' as c_jbfyid, 
 	substr(c_tjq,1,4) as nf,
-	sum(coalesce(n_xsajs_zxz,0))as ajs
+	sum(coalesce(n_zx_xsajz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
 where c_tjq like extract('year' from now()+interval'-2 year')||'%'
 group by c_tjq
@@ -534,7 +535,7 @@ union all
 select 
 	'0000185018620000' as c_jbfyid, 
 	substr(c_tjq,1,4) as nf,
-	sum(coalesce(n_xsajs_zxz,0))as ajs
+	sum(coalesce(n_zx_xsajz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
 where c_tjq like extract('year' from now()+interval'-3 year')||'%'
 group by c_tjq
@@ -543,7 +544,7 @@ union all
 select 
 	'0000185018620000' as c_jbfyid, 
 	substr(c_tjq,1,4) as nf,
-	sum(coalesce(n_xsajs_zxz,0))as ajs
+	sum(coalesce(n_zx_xsajz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
 where c_tjq like extract('year' from now()+interval'-4 year')||'%'
 group by c_tjq
@@ -552,7 +553,7 @@ union all
 select 
 	'0000185018620000' as c_jbfyid, 
 	substr(c_tjq,1,4) as nf,
-	sum(coalesce(n_xsajs_zxz,0))as ajs
+	sum(coalesce(n_zx_xsajz,0))as ajs
 from t_jspt_qd_sy_sjafx_gdtjq sja
 where c_tjq like extract('year' from now()+interval'-5 year')||'%'
 group by c_tjq
